@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<!-- Licensed under The Unlicense: see LICENSE or https://unlicense.org/ -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MaD-HaTTeRs</title>
+    <meta name="description" content="Daily worldwide AA meeting streaming live at 10:30 AM GMT via Zoom. Join MaD-HaTTeRs for fellowship every single day.">
+    <link rel="canonical" href="https://madhataa.org/">
+    <link rel="stylesheet" href="styles.css">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="theme-color" content="#f5d86a">
+    <meta name="msapplication-TileColor" content="#12070f">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://madhataa.org/">
+    <meta property="og:title" content="MaD-HaTTeRs Worldwide AA Meeting">
+    <meta property="og:description" content="Daily AA meeting live at 10:30 AM GMT. Join MaD-HaTTeRs on Zoom any day of the year.">
+    <meta property="og:image" content="https://madhataa.org/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="MaD-HaTTeRs Worldwide AA Meeting">
+    <meta name="twitter:description" content="Daily AA meeting live at 10:30 AM GMT via Zoom.">
+    <meta name="twitter:image" content="https://madhataa.org/og-image.png">
+</head>
+<body>
+    <!-- Dark / Light toggle -->
+    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark/light mode">🌙</button>
+
+    <!-- Hero layout with layered background elements for depth -->
+    <main class="hero" role="main">
+        <!-- Soft gradient wash behind all content -->
+        <div class="gradient" aria-hidden="true"></div>
+        <!-- Animated particle canvas lives underneath the card -->
+        <canvas id="particles" aria-hidden="true"></canvas>
+
+        <!-- Emoji marquee appended dynamically for capable devices -->
+        <div class="decorations" aria-hidden="true"></div>
+
+        <div class="card container">
+            <div class="poster-top" aria-hidden="true">
+                <span class="ticket-label">Worldwide AA Meeting
+                </span>
+                <span class="ticket-year">EST 2020</span>
+            </div>
+            <h1 class="site-title" data-text="MaD-HaTTeRs">MaD-HaTTeRs</h1>
+            <p class="reflections-link">
+                    Daily Reflections Meeting —
+                    <a href="https://www.aa.org/daily-reflections" target="_blank" rel="noopener">Read today's reflection</a>
+                </p>
+            <p class="dateline">
+                <span>📣 Live from the <span style="display:inline-block;transform:scaleX(-1)">📣</span> </span>
+                <span>🎶 Entertainment Capital of the Universe 🎶</span>
+                <span>🌊 Sydney, Australia! 🇦🇺 </span>
+            </p>
+            <!-- Schedule & countdown module -->
+            <section id="start-time-section" aria-labelledby="start-time-heading">
+                <h2 id="start-time-heading">We're Here Every Day of the Year!</h2>
+                <div class="start-time-lines" aria-live="polite">
+
+                    <p class="start-line sydney-line">
+                        <span class="time-label">Sydney</span>
+                        <span id="sydney-time-value" class="time-value">--:--</span>
+                        <span id="sydney-time-zone" class="time-zone"></span>
+                    </p>
+
+                    <p class="start-line">
+                        <span class="time-label">GMT</span>
+                        <span class="time-value">10:30 AM</span>
+                        <span class="time-zone">UTC/Zulu</span>
+                        <span class="time-note" aria-label="Meeting duration">Runs for one and a half hours</span>
+
+                    </p>
+
+                </div>
+                <!-- Localized clock + countdown resides here -->
+                <div class="local-clock" aria-live="polite">
+                    <div class="local-clock-label">Your timezone</div>
+                    <div class="local-clock-display" role="group" aria-label="Local meeting start">
+                        <span id="local-time-value" class="local-clock-value">00:00</span>
+                        <span id="local-time-meta" class="local-clock-meta">Local TZ</span>
+                    </div>
+                    <div class="countdown" aria-label="Countdown to next start" aria-live="polite">
+                        <div class="countdown-label">Next meeting in</div>
+                        <div class="countdown-grid" role="group" aria-label="Hours minutes seconds">
+                            <div class="countdown-unit">
+                                <span id="countdown-hours" class="countdown-value">00</span>
+                                <span class="countdown-text">hours</span>
+                            </div>
+                            <div class="countdown-separator">:</div>
+                            <div class="countdown-unit">
+                                <span id="countdown-minutes" class="countdown-value">00</span>
+                                <span class="countdown-text">minutes</span>
+                            </div>
+                            <div class="countdown-separator" id="countdown-seconds-sep">:</div>
+                            <div class="countdown-unit" id="countdown-seconds-unit">
+                                <span id="countdown-seconds" class="countdown-value">00</span>
+                                <span class="countdown-text">seconds</span>
+                            </div>
+                        </div>
+                    </div>
+                                <p class="local-clock-note">Calculated entirely in your browser &mdash; nothing leaves this page.</p>
+
+                            </div>
+
+                <!-- ON AIR indicator (visible only during the live meeting) -->
+                <div id="on-air-panel" class="on-air-panel" aria-live="polite" hidden>
+                    <span class="on-air-light" aria-hidden="true"></span>
+                    <span class="on-air-text">ON AIR</span>
+                </div>
+
+                <!-- Zoom join block -->
+                <section id="meeting-details" aria-labelledby="meeting-details-heading">
+                    <h2 id="meeting-details-heading">Join the session</h2>
+                    <p class="zoom-link">
+                        <a href="https://zoom.us/j/917584869?pwd=AA" rel="noopener" target="_blank">
+                            Join on Zoom
+                        </a>
+                    </p>
+                    <p class="zoom-meta">Meeting ID: <strong>917&nbsp;584&nbsp;869</strong> &ndash; Passcode: <strong>AA</strong></p>
+                </section>
+
+                <!-- Timezone grid placeholder gets replaced by JS -->
+                <div id="start-times" class="times" aria-live="polite">
+                        <p>Calculating local times...</p>
+                    </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+    // --- Theme toggle (runs before IIFE to avoid FOUC) ---
+    (function(){
+        const STORAGE_KEY = 'madhataa-theme';
+        const toggle = document.getElementById('theme-toggle');
+        const html = document.documentElement;
+
+        function applyTheme(theme) {
+            html.setAttribute('data-theme', theme);
+            toggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+            toggle.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+            try { localStorage.setItem(STORAGE_KEY, theme); } catch(e) {}
+        }
+
+        // Restore saved preference, or respect OS preference, or default to light
+        const saved = (function(){ try { return localStorage.getItem(STORAGE_KEY); } catch(e){ return null; } })();
+        if (saved) {
+            applyTheme(saved);
+        } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            applyTheme('dark');
+        }
+
+        toggle.addEventListener('click', function() {
+            const current = html.getAttribute('data-theme');
+            applyTheme(current === 'dark' ? 'light' : 'dark');
+        });
+    })();
+
+    (function(){
+        // Master IIFE so we can keep the global scope clean while powering every interactive element on the page.
+        // --- Timezone calculation (fixed 10:30 AM GMT) ---
+        const fixedHourUtc = 10;
+        const fixedMinuteUtc = 30;
+
+        const now = new Date();
+        const utcDate = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), fixedHourUtc, fixedMinuteUtc, 0));
+        const DAY_MS = 24 * 60 * 60 * 1000;
+
+        // Map of hand-picked American timezones → human-friendly abbreviations so they match the Australian AEDT style.
+        const timezoneAbbrevMap = {
+            'America/New_York': {standard: 'EST', daylight: 'EDT'},
+            'America/Chicago': {standard: 'CST', daylight: 'CDT'},
+            'America/Denver': {standard: 'MST', daylight: 'MDT'},
+            'America/Los_Angeles': {standard: 'PST', daylight: 'PDT'}
+        };
+        const timezoneOffsetCache = {};
+
+        // When Intl gives us a formatted string we still need to know whether DST is active. Compute offsets per zone + season.
+        function offsetInMinutes(date, timeZone){
+            const dtf = new Intl.DateTimeFormat('en-US', {
+                hour12: false,
+                timeZone,
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            const parts = dtf.formatToParts(date);
+            const data = {};
+            parts.forEach(({type, value}) => { data[type] = value; });
+            const asUtc = Date.UTC(
+                Number(data.year),
+                Number(data.month) - 1,
+                Number(data.day),
+                Number(data.hour),
+                Number(data.minute),
+                Number(data.second || 0)
+            );
+            return (asUtc - date.getTime()) / 60000;
+        }
+
+        // Resolve the most human-friendly timezone label we can (EST vs EDT, etc.).
+        function resolveTzName(tz, fallback){
+            const override = timezoneAbbrevMap[tz];
+            if (!override) return fallback;
+            if (!timezoneOffsetCache[tz]) {
+                const year = utcDate.getUTCFullYear();
+                const jan = new Date(Date.UTC(year, 0, 1, fixedHourUtc, fixedMinuteUtc, 0));
+                const jul = new Date(Date.UTC(year, 6, 1, fixedHourUtc, fixedMinuteUtc, 0));
+                timezoneOffsetCache[tz] = {
+                    jan: offsetInMinutes(jan, tz),
+                    jul: offsetInMinutes(jul, tz)
+                };
+            }
+            const offsets = timezoneOffsetCache[tz];
+            const currentOffset = offsetInMinutes(utcDate, tz);
+            const isDaylight = offsets.jul !== offsets.jan && Math.abs(currentOffset - offsets.jul) < 0.5;
+            if (isDaylight && override.daylight) return override.daylight;
+            if (!isDaylight && override.standard) return override.standard;
+            return override.standard || override.daylight || fallback;
+        }
+
+        const shouldUseLowEffectsMode = (() => {
+            // Reduced motion? Low RAM? Data Saver active? Bail early and skip the heavy visuals + per-second DOM churn.
+            const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            const lowMemory = typeof navigator.deviceMemory === 'number' && navigator.deviceMemory <= 2;
+            const saveData = navigator.connection && navigator.connection.saveData;
+            return !!(reduceMotion || lowMemory || saveData);
+        })();
+
+        // Every city we want to highlight in the grid. Flip the order / emojis here to curate the vibe.
+        const zones = [
+            {label: 'Perth', tz: 'Australia/Perth', emoji: '🌅'},
+            {label: 'Adelaide', tz: 'Australia/Adelaide', emoji: '🕍'},
+            {label: 'Brisbane', tz: 'Australia/Brisbane', featured: true, emoji: '🎆'},
+            {label: 'Auckland', tz: 'Pacific/Auckland', emoji: '🥝'},
+            {label: 'Portland', tz: 'America/Los_Angeles', emoji: '🦌'},
+            {label: 'Denver', tz: 'America/Denver', emoji: '⛰️'},
+            {label: 'Chicago', tz: 'America/Chicago', emoji: '🌽'},
+            {label: 'Boston', tz: 'America/New_York', emoji: '🏙️'}
+        ];
+
+        const container = document.getElementById('start-times');
+        const sydneyTimeEl = document.getElementById('sydney-time-value');
+        const sydneyZoneEl = document.getElementById('sydney-time-zone');
+        const localTimeEls = {
+            value: document.getElementById('local-time-value'),
+            meta: document.getElementById('local-time-meta')
+        };
+        const localTimeFormatter = new Intl.DateTimeFormat(undefined, {hour: 'numeric', minute: '2-digit', hour12: true, timeZoneName: 'short'});
+        const countdownEls = {
+            hours: document.getElementById('countdown-hours'),
+            minutes: document.getElementById('countdown-minutes'),
+            seconds: document.getElementById('countdown-seconds')
+        };
+        const countdownSecondsUnit = document.getElementById('countdown-seconds-unit');
+        const countdownSecondsSeparator = document.getElementById('countdown-seconds-sep');
+        const shouldHideCountdownSeconds = shouldUseLowEffectsMode;
+        if (shouldHideCountdownSeconds) {
+            // Hide seconds entirely so low-end devices avoid layout thrash.
+            if (countdownSecondsUnit) countdownSecondsUnit.style.display = 'none';
+            if (countdownSecondsSeparator) countdownSecondsSeparator.style.display = 'none';
+            countdownEls.seconds = null;
+        }
+        container.innerHTML = '';
+
+        // --- mobile grid (fallback) ---
+        const grid = document.createElement('ul');
+        grid.className = 'tz-grid';
+
+        // helper to format time parts
+        function timePartsForZone(z) {
+            // Format a single zone into hour/minute/period pieces so we can reuse the data across the grid + hero.
+            const timeFmt = new Intl.DateTimeFormat(undefined, {hour: 'numeric', minute: '2-digit', hour12: true, timeZone: z.tz, timeZoneName: 'short'});
+            const parts = timeFmt.formatToParts(utcDate);
+            const hour = parts.find(p=>p.type==='hour')?.value || '';
+            const minute = parts.find(p=>p.type==='minute')?.value || '';
+            const period = parts.find(p=>p.type==='dayPeriod')?.value || '';
+            const tzRaw = parts.find(p=>p.type==='timeZoneName')?.value || '';
+            const tzName = resolveTzName(z.tz, tzRaw);
+            return {hour, minute, period, tzName};
+        }
+
+        zones.forEach(z => {
+            const li = document.createElement('li');
+            li.className = 'clock-box';
+            if (z.featured) li.classList.add('clock-box-featured');
+            const tp = timePartsForZone(z);
+            const timeText = `${tp.hour}:${tp.minute} ${tp.period}`;
+
+            // Figure out whether the local day differs from UTC so we can add a "Tomorrow" hint when appropriate.
+            const localDate = new Intl.DateTimeFormat('en-CA', {year:'numeric', month:'2-digit', day:'2-digit', timeZone: z.tz}).format(utcDate);
+            const utcDateStr = new Intl.DateTimeFormat('en-CA', {year:'numeric', month:'2-digit', day:'2-digit', timeZone: 'UTC'}).format(utcDate);
+            let dayLabel = '';
+            if (localDate !== utcDateStr) {
+                const local = new Date(localDate + 'T00:00:00');
+                const utc = new Date(utcDateStr + 'T00:00:00');
+                const diffDays = Math.round((local - utc)/(1000*60*60*24));
+                if (diffDays === 1) dayLabel = 'Tomorrow';
+                else if (diffDays === -1) dayLabel = 'Yesterday';
+                else dayLabel = (diffDays>0?`+${diffDays}d`:`${diffDays}d`);
+            }
+
+            li.innerHTML = `
+                <div class="clock-label">${z.emoji ? `<span class="clock-emoji" aria-hidden="true">${z.emoji}</span>` : ''}<span class="clock-label-text">${z.label}</span></div>
+                <div class="clock-time" aria-hidden="true">${timeText}</div>
+                <div class="clock-meta"><span class="tz">${tp.tzName}</span>${dayLabel?'<span class="day"> &middot; '+dayLabel+'</span>':''}</div>
+            `;
+            grid.appendChild(li);
+        });
+        container.appendChild(grid);
+
+        if (sydneyTimeEl) {
+            const sydneyParts = timePartsForZone({tz: 'Australia/Sydney'});
+            const sydneyTimeText = `${sydneyParts.hour}:${sydneyParts.minute} ${sydneyParts.period}`;
+            sydneyTimeEl.textContent = sydneyTimeText;
+            if (sydneyZoneEl) sydneyZoneEl.textContent = sydneyParts.tzName;
+        }
+
+        let countdownTarget = utcDate;
+        if (now > countdownTarget) countdownTarget = new Date(countdownTarget.getTime() + DAY_MS);
+
+        function updateCountdown(){
+            // Update hours/minutes (and seconds if allowed) plus refresh the "your timezone" block.
+            if (!countdownEls.hours || !countdownEls.minutes) return;
+            const current = new Date();
+            if ((countdownTarget - current) <= 0) {
+                countdownTarget = new Date(countdownTarget.getTime() + DAY_MS);
+            }
+            const diffMs = countdownTarget - current;
+            const totalSeconds = Math.max(0, Math.floor(diffMs / 1000));
+            const hrs = Math.floor(totalSeconds / 3600);
+            const mins = Math.floor((totalSeconds % 3600) / 60);
+            const secs = totalSeconds % 60;
+            countdownEls.hours.textContent = String(hrs).padStart(2, '0');
+            countdownEls.minutes.textContent = String(mins).padStart(2, '0');
+            if (countdownEls.seconds) {
+                countdownEls.seconds.textContent = String(secs).padStart(2, '0');
+            }
+            updateLocalMeetingTime();
+        }
+
+        // --- ON AIR logic (meeting runs 10:30–12:00 UTC daily) ---
+        const onAirPanel = document.getElementById('on-air-panel');
+        const MEETING_DURATION_MS = 90 * 60 * 1000; // 1.5 hours
+
+        function updateOnAir() {
+            if (!onAirPanel) return;
+            const now2 = new Date();
+            // Build today's meeting window in UTC
+            const startToday = new Date(Date.UTC(now2.getUTCFullYear(), now2.getUTCMonth(), now2.getUTCDate(), fixedHourUtc, fixedMinuteUtc, 0));
+            const endToday = new Date(startToday.getTime() + MEETING_DURATION_MS);
+            const isLive = now2 >= startToday && now2 < endToday;
+            if (isLive) {
+                onAirPanel.removeAttribute('hidden');
+            } else {
+                onAirPanel.setAttribute('hidden', '');
+            }
+        }
+
+        updateOnAir();
+
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+        setInterval(updateOnAir, 15000); // re-check every 15s
+
+        function updateLocalMeetingTime(){
+            // Mirror the next meeting start in the visitor's detected timezone so they can sanity-check the clock.
+            if (!localTimeEls.value || !localTimeEls.meta || !countdownTarget) return;
+            const parts = localTimeFormatter.formatToParts(countdownTarget);
+            const hour = parts.find(p=>p.type==='hour')?.value || '--';
+            const minute = parts.find(p=>p.type==='minute')?.value || '--';
+            const period = parts.find(p=>p.type==='dayPeriod')?.value || '';
+            const tzLabel = parts.find(p=>p.type==='timeZoneName')?.value || Intl.DateTimeFormat().resolvedOptions().timeZone || 'Local';
+            localTimeEls.value.textContent = `${hour}:${minute} ${period}`;
+            localTimeEls.meta.textContent = tzLabel;
+        }
+
+        updateLocalMeetingTime();
+
+        // --- Decorative emoji animation (country flair) ---
+        const emojis = [
+            '😀','😃','😄','😁','😆','😅','😂','🤣','😊','😇','🙂','🙃','😉','😌','😋','😛','😜','🤪','😝','🤗','🤭','🤫','🤔','🤐','🤨','😐','😑','😶','😏','😒','😬','😴','🤤','😪','😮','😯','😲','😳','🥵','🥶','😵','🤯','😎','👻','👽','👾','🤖','🎭','🤩',
+            '🎩','👒','🧢','👑','⛑️','🪖','👷','👨‍✈️','👲','👳','🤠','🧑🏻‍🦱','🧑🏾‍🦱','👩🏼‍🦳','👩🏾‍🦱','👨🏻‍🦰','👨🏽‍🦳','👩🏽‍🦱','👨🏾‍🦱','👵🏽','👴🏻',
+            '🎵','🎶','🎼','🎧','🎤','🎷','🎸','🎹','🎺','🎻','🥁','🪘','🪗','🪕',
+            '🌾','🌻','🌽','🌵','🌙','⭐','🍂','❤️','🐎','🐄','🐑','🐖','🐓','🐕',
+            '🚜','🚚','🚛','🚒','🚓','🚐','🚍','🚎',
+            '🎟️','🎠','🏕️','🌈',
+            '⚡','🐧'
+        ];
+        const vehicles = new Set(['🚜','🚚','🚛','🚒','🚓','🚐','🚍','🚎']);
+        const animals = new Set(['🐎','🐄','🐑','🐖','🐓','🐕']);
+        const deco = document.querySelector('.decorations');
+
+        function createEmojiLTR(){
+            // Left-to-right emoji (horizontally flipped so they face right)
+            if (!deco) return;
+            const span = document.createElement('span');
+            span.className = 'emoji';
+            span.setAttribute('aria-hidden','true');
+            const ch = emojis[Math.floor(Math.random()*emojis.length)];
+
+            const inner = document.createElement('span');
+            inner.className = 'flip-inner';
+            inner.textContent = ch;
+            span.appendChild(inner);
+
+            const size = 18 + Math.random()*36;
+            span.style.fontSize = size + 'px';
+            span.style.opacity = (0.6 + Math.random()*0.4).toFixed(2);
+            span.style.bottom = (5 + Math.random()*28) + 'vh';
+
+            const duration = 8000 + Math.random()*9000;
+            span.style.left = '-8%';
+            span.style.animation = `move-right ${duration}ms linear forwards`;
+
+            deco.appendChild(span);
+            span.addEventListener('animationend', ()=> span.remove(), {once:true});
+        }
+
+        function createEmojiRTL(){
+            // Right-to-left emoji (no flip, default glyph orientation)
+            if (!deco) return;
+            const span = document.createElement('span');
+            span.className = 'emoji';
+            span.setAttribute('aria-hidden','true');
+            const ch = emojis[Math.floor(Math.random()*emojis.length)];
+            span.textContent = ch;
+
+            const size = 18 + Math.random()*36;
+            span.style.fontSize = size + 'px';
+            span.style.opacity = (0.6 + Math.random()*0.4).toFixed(2);
+            span.style.bottom = (5 + Math.random()*28) + 'vh';
+
+            const duration = 8000 + Math.random()*9000;
+            span.style.right = '-8%';
+            span.style.animation = `move-left ${duration}ms linear forwards`;
+
+            deco.appendChild(span);
+            span.addEventListener('animationend', ()=> span.remove(), {once:true});
+        }
+
+        if (!shouldUseLowEffectsMode) {
+            setInterval(createEmojiLTR, 520);
+            setInterval(createEmojiRTL, 520);
+            for(let i=0;i<10;i++) { createEmojiLTR(); createEmojiRTL(); }
+        } else if (deco) {
+            deco.style.display = 'none';
+        }
+
+        // --- Particle canvas background ---
+        const canvas = document.getElementById('particles');
+        const ctx = canvas.getContext('2d');
+        let W, H;
+        function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+        resize();
+        window.addEventListener('resize', resize);
+
+        // Lightweight particle system for subtle movement behind the card.
+        const dots = Array.from({length: 80}, () => ({
+            x: Math.random() * W,
+            y: Math.random() * H,
+            r: 0.5 + Math.random() * 1.5,
+            dx: (Math.random() - 0.5) * 0.3,
+            dy: (Math.random() - 0.5) * 0.3,
+            o: 0.15 + Math.random() * 0.4
+        }));
+
+        function drawParticles() {
+            // Move each dot, wrap around edges, and draw connective tissue for nearby neighbors.
+            ctx.clearRect(0, 0, W, H);
+            dots.forEach(d => {
+                d.x += d.dx; d.y += d.dy;
+                if (d.x < 0) d.x = W; if (d.x > W) d.x = 0;
+                if (d.y < 0) d.y = H; if (d.y > H) d.y = 0;
+                ctx.beginPath();
+                ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(120, 200, 255, ${d.o})`;
+                ctx.shadowColor = 'rgba(100, 180, 255, 0.6)';
+                ctx.shadowBlur = 6;
+                ctx.fill();
+            });
+            // draw lines between nearby dots
+            for (let i = 0; i < dots.length; i++) {
+                for (let j = i + 1; j < dots.length; j++) {
+                    const dx = dots[i].x - dots[j].x, dy = dots[i].y - dots[j].y;
+                    const dist = Math.sqrt(dx*dx + dy*dy);
+                    if (dist < 120) {
+                        ctx.beginPath();
+                        ctx.moveTo(dots[i].x, dots[i].y);
+                        ctx.lineTo(dots[j].x, dots[j].y);
+                        ctx.strokeStyle = `rgba(100, 180, 255, ${0.08 * (1 - dist/120)})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.stroke();
+                    }
+                }
+            }
+            ctx.shadowBlur = 0;
+            requestAnimationFrame(drawParticles);
+        }
+        drawParticles();
+    })();
+    </script>
+</body>
+</html>
