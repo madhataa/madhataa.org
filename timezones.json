@@ -1,9 +1,9 @@
 {
   "meeting": {
-    "zone": "Australia/Adelaide",
-    "hour": 19,
-    "minute": 0,
-    "label": "7:00 PM"
+    "zone": "Europe/London",
+    "hour": 10,
+    "minute": 30,
+    "label": "10:30 AM"
   },
   "zones": [
     { "label": "Adelaide", "tz": "Australia/Adelaide", "emoji": "🕍", "featured": true },
