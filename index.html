@@ -1,316 +1,168 @@
 <!DOCTYPE html>
+<!-- Licensed under The Unlicense: see LICENSE or https://unlicense.org/ -->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meeting Times - Australian Based</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        
-        .container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            max-width: 600px;
-            width: 100%;
-            padding: 40px;
-        }
-        
-        h1 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 10px;
-            font-size: 28px;
-        }
-        
-        .subtitle {
-            text-align: center;
-            color: #666;
-            margin-bottom: 40px;
-            font-size: 14px;
-        }
-        
-        .meeting-info {
-            background: #f8f9fa;
-            border-left: 4px solid #667eea;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 40px;
-        }
-        
-        .meeting-time {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-        
-        .meeting-time label {
-            color: #666;
-            font-weight: 600;
-            font-size: 14px;
-        }
-        
-        .meeting-time-value {
-            font-size: 24px;
-            font-weight: 700;
-            color: #667eea;
-        }
-        
-        .countdown {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-        
-        .countdown-label {
-            color: #666;
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 15px;
-        }
-        
-        .countdown-display {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        
-        .countdown-unit {
-            text-align: center;
-        }
-        
-        .countdown-value {
-            font-size: 36px;
-            font-weight: 700;
-            color: #333;
-            line-height: 1;
-        }
-        
-        .countdown-label-small {
-            font-size: 12px;
-            color: #666;
-            margin-top: 8px;
-            font-weight: 600;
-        }
-        
-        .countdown-separator {
-            font-size: 32px;
-            color: #ccc;
-            font-weight: 300;
-        }
-        
-        #countdown-seconds-unit {
-            display: block;
-        }
-        
-        .local-time {
-            text-align: center;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 8px;
-            margin-bottom: 30px;
-        }
-        
-        .local-time-label {
-            font-size: 12px;
-            color: #666;
-            margin-bottom: 8px;
-        }
-        
-        .local-time-value {
-            font-size: 20px;
-            font-weight: 700;
-            color: #333;
-        }
-        
-        .local-time-meta {
-            font-size: 12px;
-            color: #999;
-            margin-top: 4px;
-        }
-        
-        .tz-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            list-style: none;
-            margin-top: 30px;
-        }
-        
-        .clock-box {
-            background: #f8f9fa;
-            border: 2px solid #e9ecef;
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            transition: all 0.3s ease;
-            cursor: default;
-        }
-        
-        .clock-box:hover {
-            border-color: #667eea;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
-        }
-        
-        .clock-box-featured {
-            border-color: #667eea;
-            background: linear-gradient(135deg, #667eea15, #764ba215);
-            font-weight: 600;
-        }
-        
-        .clock-emoji {
-            font-size: 28px;
-            display: block;
-            margin-bottom: 8px;
-        }
-        
-        .clock-label {
-            font-size: 12px;
-            color: #666;
-            font-weight: 600;
-            margin-bottom: 12px;
-        }
-        
-        .clock-label-text {
-            display: block;
-        }
-        
-        .clock-time {
-            font-size: 18px;
-            font-weight: 700;
-            color: #333;
-            margin-bottom: 6px;
-        }
-        
-        .clock-meta {
-            font-size: 11px;
-            color: #999;
-        }
-        
-        .tz {
-            display: inline-block;
-        }
-        
-        #on-air-panel {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #ef4444;
-            color: white;
-            padding: 12px 24px;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 14px;
-            box-shadow: 0 10px 25px rgba(239, 68, 68, 0.3);
-            animation: pulse 2s infinite;
-        }
-        
-        #on-air-panel[hidden] {
-            display: none;
-        }
-        
-        @keyframes pulse {
-            0%, 100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.7;
-            }
-        }
-        
-        @media (max-width: 600px) {
-            .container {
-                padding: 20px;
-            }
-            
-            h1 {
-                font-size: 22px;
-            }
-            
-            .countdown-display {
-                gap: 10px;
-            }
-            
-            .countdown-value {
-                font-size: 28px;
-            }
-            
-            .tz-grid {
-                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-                gap: 10px;
-            }
-        }
-    </style>
+    <title>MaD-HaTTeRs</title>
+    <meta name="description" content="Daily worldwide AA meeting streaming live at 10:30 AM GMT via Zoom. Join MaD-HaTTeRs for fellowship every single day.">
+    <link rel="canonical" href="https://madhataa.org/">
+    <link rel="stylesheet" href="styles.css">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="theme-color" content="#f5d86a">
+    <meta name="msapplication-TileColor" content="#12070f">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://madhataa.org/">
+    <meta property="og:title" content="MaD-HaTTeRs Worldwide AA Meeting">
+    <meta property="og:description" content="Daily AA meeting live at 10:30 AM GMT. Join MaD-HaTTeRs on Zoom any day of the year.">
+    <meta property="og:image" content="https://madhataa.org/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="MaD-HaTTeRs Worldwide AA Meeting">
+    <meta name="twitter:description" content="Daily AA meeting live at 10:30 AM GMT via Zoom.">
+    <meta name="twitter:image" content="https://madhataa.org/og-image.png">
 </head>
 <body>
-    <div class="container">
-        <h1>🌍 Meeting Times</h1>
-        <p class="subtitle">Next meeting in your timezone</p>
-        
-        <div class="meeting-info">
-            <div class="meeting-time">
-                <label>Sydney Base Time:</label>
-                <div>
-                    <div class="meeting-time-value">
-                        <span id="sydney-time-value">--:-- --</span>
-                        <span id="sydney-time-zone" style="font-size: 12px; color: #999; display: block; margin-top: 4px;"></span>
+    <!-- Dark / Light toggle -->
+    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark/light mode">🌙</button>
+
+    <!-- Hero layout with layered background elements for depth -->
+    <main class="hero" role="main">
+        <!-- Soft gradient wash behind all content -->
+        <div class="gradient" aria-hidden="true"></div>
+        <!-- Animated particle canvas lives underneath the card -->
+        <canvas id="particles" aria-hidden="true"></canvas>
+
+        <!-- Emoji marquee appended dynamically for capable devices -->
+        <div class="decorations" aria-hidden="true"></div>
+
+        <div class="card container">
+            <div class="poster-top" aria-hidden="true">
+                <span class="ticket-label">Worldwide AA Meeting
+                </span>
+                <span class="ticket-year">EST 2020</span>
+            </div>
+            <h1 class="site-title" data-text="MaD-HaTTeRs">MaD-HaTTeRs</h1>
+            <p class="reflections-link">
+                    Daily Reflections Meeting —
+                    <a href="https://www.aa.org/daily-reflections" target="_blank" rel="noopener">Read today's reflection</a>
+                </p>
+            <p class="dateline">
+                <span>📣 Live from the <span style="display:inline-block;transform:scaleX(-1)">📣</span> </span>
+                <span>🎶 Entertainment Capital of the Universe 🎶</span>
+                <span>🌊 Sydney, Australia! 🇦🇺 </span>
+            </p>
+            <!-- Schedule & countdown module -->
+            <section id="start-time-section" aria-labelledby="start-time-heading">
+                <h2 id="start-time-heading">We're Here Every Day of the Year!</h2>
+                <div class="start-time-lines" aria-live="polite">
+
+                    <p class="start-line sydney-line">
+                        <span class="time-label">Sydney</span>
+                        <span id="sydney-time-value" class="time-value">--:--</span>
+                        <span id="sydney-time-zone" class="time-zone"></span>
+                    </p>
+
+                    <p class="start-line">
+                        <span class="time-label">GMT</span>
+                        <span class="time-value">10:30 AM</span>
+                        <span class="time-zone">UTC/Zulu</span>
+                        <span class="time-note" aria-label="Meeting duration">Runs for one and a half hours</span>
+
+                    </p>
+
+                </div>
+                <!-- Localized clock + countdown resides here -->
+                <div class="local-clock" aria-live="polite">
+                    <div class="local-clock-label">Your timezone</div>
+                    <div class="local-clock-display" role="group" aria-label="Local meeting start">
+                        <span id="local-time-value" class="local-clock-value">00:00</span>
+                        <span id="local-time-meta" class="local-clock-meta">Local TZ</span>
                     </div>
+                    <div class="countdown" aria-label="Countdown to next start" aria-live="polite">
+                        <div class="countdown-label">Next meeting in</div>
+                        <div class="countdown-grid" role="group" aria-label="Hours minutes seconds">
+                            <div class="countdown-unit">
+                                <span id="countdown-hours" class="countdown-value">00</span>
+                                <span class="countdown-text">hours</span>
+                            </div>
+                            <div class="countdown-separator">:</div>
+                            <div class="countdown-unit">
+                                <span id="countdown-minutes" class="countdown-value">00</span>
+                                <span class="countdown-text">minutes</span>
+                            </div>
+                            <div class="countdown-separator" id="countdown-seconds-sep">:</div>
+                            <div class="countdown-unit" id="countdown-seconds-unit">
+                                <span id="countdown-seconds" class="countdown-value">00</span>
+                                <span class="countdown-text">seconds</span>
+                            </div>
+                        </div>
+                    </div>
+                                <p class="local-clock-note">Calculated entirely in your browser &mdash; nothing leaves this page.</p>
+
+                            </div>
+
+                <!-- ON AIR indicator (visible only during the live meeting) -->
+                <div id="on-air-panel" class="on-air-panel" aria-live="polite" hidden>
+                    <span class="on-air-light" aria-hidden="true"></span>
+                    <span class="on-air-text">ON AIR</span>
                 </div>
-            </div>
+
+                <!-- Zoom join block -->
+                <section id="meeting-details" aria-labelledby="meeting-details-heading">
+                    <h2 id="meeting-details-heading">Join the session</h2>
+                    <p class="zoom-link">
+                        <a href="https://zoom.us/j/917584869?pwd=AA" rel="noopener" target="_blank">
+                            Join on Zoom
+                        </a>
+                    </p>
+                    <p class="zoom-meta">Meeting ID: <strong>917&nbsp;584&nbsp;869</strong> &ndash; Passcode: <strong>AA</strong></p>
+                </section>
+
+                <!-- Timezone grid placeholder gets replaced by JS -->
+                <div id="start-times" class="times" aria-live="polite">
+                        <p>Calculating local times...</p>
+                    </div>
+            </section>
         </div>
-        
-        <div class="countdown">
-            <div class="countdown-label">Time Until Next Meeting</div>
-            <div class="countdown-display">
-                <div class="countdown-unit">
-                    <div class="countdown-value" id="countdown-hours">00</div>
-                    <div class="countdown-label-small">Hours</div>
-                </div>
-                <div class="countdown-separator">:</div>
-                <div class="countdown-unit">
-                    <div class="countdown-value" id="countdown-minutes">00</div>
-                    <div class="countdown-label-small">Minutes</div>
-                </div>
-                <div class="countdown-separator" id="countdown-seconds-sep">:</div>
-                <div class="countdown-unit" id="countdown-seconds-unit">
-                    <div class="countdown-value" id="countdown-seconds">00</div>
-                    <div class="countdown-label-small">Seconds</div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="local-time">
-            <div class="local-time-label">Your Local Time for Meeting:</div>
-            <div class="local-time-value" id="local-time-value">--:-- --</div>
-            <div class="local-time-meta" id="local-time-meta">--</div>
-        </div>
-        
-        <div>
-            <div style="font-size: 14px; color: #666; font-weight: 600; margin-bottom: 15px;">Meeting Times by Timezone:</div>
-            <ul class="tz-grid" id="start-times"></ul>
-        </div>
-    </div>
-    
-    <div id="on-air-panel" hidden>🔴 LIVE NOW</div>
+    </main>
 
     <script>
-        (function(){
+    // --- Theme toggle (runs before IIFE to avoid FOUC) ---
+    (function(){
+        const STORAGE_KEY = 'madhataa-theme';
+        const toggle = document.getElementById('theme-toggle');
+        const html = document.documentElement;
+
+        function applyTheme(theme) {
+            html.setAttribute('data-theme', theme);
+            toggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+            toggle.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+            try { localStorage.setItem(STORAGE_KEY, theme); } catch(e) {}
+        }
+
+        // Restore saved preference, or respect OS preference, or default to light
+        const saved = (function(){ try { return localStorage.getItem(STORAGE_KEY); } catch(e){ return null; } })();
+        if (saved) {
+            applyTheme(saved);
+        } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            applyTheme('dark');
+        }
+
+        toggle.addEventListener('click', function() {
+            const current = html.getAttribute('data-theme');
+            applyTheme(current === 'dark' ? 'light' : 'dark');
+        });
+    })();
+
+    (function(){
         // Master IIFE so we can keep the global scope clean while powering every interactive element on the page.
         // --- Load meeting config from timezones.json ---
         (async function() {
@@ -490,7 +342,136 @@
             setInterval(updateCountdownAndLocal, 1000);
             setInterval(updateOnAir, 15000);
         })();
+
+        // --- Decorative emoji animation (country flair) ---
+        const emojis = [
+            '😀','😃','😄','😁','😆','😅','😂','🤣','😊','😇','🙂','🙃','😉','😌','😋','😛','😜','🤪','😝','🤗','🤭','🤫','🤔','🤐','🤨','😐',
+            '🎩','👒','🧢','👑','⛑️','🪖','👷','👨‍✈️','👲','👳','🤠','🧑🏻‍🦱','🧑🏾‍🦱','👩🏼‍🦳','👩🏾‍🦱','👨🏻‍🦰','👨',
+            '🎵','🎶','🎼','🎧','🎤','🎷','🎸','🎹','🎺','🎻','🥁','🪘','🪗','🪕',
+            '🌾','🌻','🌽','🌵','🌙','⭐','🍂','❤️','🐎','🐄','🐑','🐖','🐓','🐕',
+            '🚜','🚚','🚛','🚒','🚓','🚐','🚍','🚎',
+            '🎟️','🎠','🏕️','🌈',
+            '⚡','🐧'
+        ];
+        const vehicles = new Set(['🚜','🚚','🚛','🚒','🚓','🚐','🚍','🚎']);
+        const animals = new Set(['🐎','🐄','🐑','🐖','🐓','🐕']);
+        const deco = document.querySelector('.decorations');
+
+        function createEmojiLTR(){
+            // Left-to-right emoji (horizontally flipped so they face right)
+            if (!deco) return;
+            const span = document.createElement('span');
+            span.className = 'emoji';
+            span.setAttribute('aria-hidden','true');
+            const ch = emojis[Math.floor(Math.random()*emojis.length)];
+
+            const inner = document.createElement('span');
+            inner.className = 'flip-inner';
+            inner.textContent = ch;
+            span.appendChild(inner);
+
+            const size = 18 + Math.random()*36;
+            span.style.fontSize = size + 'px';
+            span.style.opacity = (0.6 + Math.random()*0.4).toFixed(2);
+            span.style.bottom = (5 + Math.random()*28) + 'vh';
+
+            const duration = 8000 + Math.random()*9000;
+            span.style.left = '-8%';
+            span.style.animation = `move-right ${duration}ms linear forwards`;
+
+            deco.appendChild(span);
+            span.addEventListener('animationend', ()=> span.remove(), {once:true});
+        }
+
+        function createEmojiRTL(){
+            // Right-to-left emoji (no flip, default glyph orientation)
+            if (!deco) return;
+            const span = document.createElement('span');
+            span.className = 'emoji';
+            span.setAttribute('aria-hidden','true');
+            const ch = emojis[Math.floor(Math.random()*emojis.length)];
+            span.textContent = ch;
+
+            const size = 18 + Math.random()*36;
+            span.style.fontSize = size + 'px';
+            span.style.opacity = (0.6 + Math.random()*0.4).toFixed(2);
+            span.style.bottom = (5 + Math.random()*28) + 'vh';
+
+            const duration = 8000 + Math.random()*9000;
+            span.style.right = '-8%';
+            span.style.animation = `move-left ${duration}ms linear forwards`;
+
+            deco.appendChild(span);
+            span.addEventListener('animationend', ()=> span.remove(), {once:true});
+        }
+
+        const shouldUseLowEffectsMode = (() => {
+            const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            const lowMemory = typeof navigator.deviceMemory === 'number' && navigator.deviceMemory <= 2;
+            const saveData = navigator.connection && navigator.connection.saveData;
+            return !!(reduceMotion || lowMemory || saveData);
         })();
+
+        if (!shouldUseLowEffectsMode) {
+            setInterval(createEmojiLTR, 520);
+            setInterval(createEmojiRTL, 520);
+            for(let i=0;i<10;i++) { createEmojiLTR(); createEmojiRTL(); }
+        } else if (deco) {
+            deco.style.display = 'none';
+        }
+
+        // --- Particle canvas background ---
+        const canvas = document.getElementById('particles');
+        const ctx = canvas.getContext('2d');
+        let W, H;
+        function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+        resize();
+        window.addEventListener('resize', resize);
+
+        // Lightweight particle system for subtle movement behind the card.
+        const dots = Array.from({length: 80}, () => ({
+            x: Math.random() * W,
+            y: Math.random() * H,
+            r: 0.5 + Math.random() * 1.5,
+            dx: (Math.random() - 0.5) * 0.3,
+            dy: (Math.random() - 0.5) * 0.3,
+            o: 0.15 + Math.random() * 0.4
+        }));
+
+        function drawParticles() {
+            // Move each dot, wrap around edges, and draw connective tissue for nearby neighbors.
+            ctx.clearRect(0, 0, W, H);
+            dots.forEach(d => {
+                d.x += d.dx; d.y += d.dy;
+                if (d.x < 0) d.x = W; if (d.x > W) d.x = 0;
+                if (d.y < 0) d.y = H; if (d.y > H) d.y = 0;
+                ctx.beginPath();
+                ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(120, 200, 255, ${d.o})`;
+                ctx.shadowColor = 'rgba(100, 180, 255, 0.6)';
+                ctx.shadowBlur = 6;
+                ctx.fill();
+            });
+            // draw lines between nearby dots
+            for (let i = 0; i < dots.length; i++) {
+                for (let j = i + 1; j < dots.length; j++) {
+                    const dx = dots[i].x - dots[j].x, dy = dots[i].y - dots[j].y;
+                    const dist = Math.sqrt(dx*dx + dy*dy);
+                    if (dist < 120) {
+                        ctx.beginPath();
+                        ctx.moveTo(dots[i].x, dots[i].y);
+                        ctx.lineTo(dots[j].x, dots[j].y);
+                        ctx.strokeStyle = `rgba(100, 180, 255, ${0.08 * (1 - dist/120)})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.stroke();
+                    }
+                }
+            }
+            ctx.shadowBlur = 0;
+            requestAnimationFrame(drawParticles);
+        }
+        drawParticles();
+    })();
     </script>
 </body>
 </html>
