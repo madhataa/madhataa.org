@@ -6,7 +6,6 @@
     "label": "10:30 AM"
   },
   "zones": [
-    { "label": "Adelaide", "tz": "Australia/Adelaide", "emoji": "🕍", "featured": true },
     { "label": "Sydney", "tz": "Australia/Sydney", "emoji": "🌊" },
     { "label": "Perth", "tz": "Australia/Perth", "emoji": "🌅" },
     { "label": "Brisbane", "tz": "Australia/Brisbane", "emoji": "🎆" },
