@@ -12,7 +12,8 @@
                 return;
             }
 
-            const meetingCfg = cfg.meeting || { zone: 'Europe/London', hour: 10, minute: 30 };
+            // Base meeting time: 7:30 PM Sydney time (Australia/Sydney)
+            const meetingCfg = { zone: 'Australia/Sydney', hour: 19, minute: 30 };
             const zones = cfg.zones || [];
 
             // Utility: compute offset in minutes for a particular instant in a given IANA timeZone.
@@ -48,7 +49,7 @@
                 return new Date(utcGuess - offset * 60000);
             }
 
-            // Build the "next meeting" UTC instant for the meeting zone
+            // Build the "next meeting" UTC instant for the meeting zone (Sydney 7:30 PM)
             function nextMeetingInstant(now = new Date()) {
                 const localParts = new Intl.DateTimeFormat('en-CA', { timeZone: meetingCfg.zone, year: 'numeric', month: '2-digit', day: '2-digit' }).format(now);
                 const [year, month, day] = localParts.split('-').map(Number);
