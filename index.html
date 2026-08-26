@@ -1,3 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meeting Times - Australian Based</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 14px;
+        }
+        
+        .meeting-info {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+        }
+        
+        .meeting-time {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .meeting-time label {
+            color: #666;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .meeting-time-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #667eea;
+        }
+        
+        .countdown {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .countdown-label {
+            color: #666;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .countdown-display {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .countdown-unit {
+            text-align: center;
+        }
+        
+        .countdown-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: #333;
+            line-height: 1;
+        }
+        
+        .countdown-label-small {
+            font-size: 12px;
+            color: #666;
+            margin-top: 8px;
+            font-weight: 600;
+        }
+        
+        .countdown-separator {
+            font-size: 32px;
+            color: #ccc;
+            font-weight: 300;
+        }
+        
+        #countdown-seconds-unit {
+            display: block;
+        }
+        
+        .local-time {
+            text-align: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        
+        .local-time-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        
+        .local-time-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #333;
+        }
+        
+        .local-time-meta {
+            font-size: 12px;
+            color: #999;
+            margin-top: 4px;
+        }
+        
+        .tz-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            list-style: none;
+            margin-top: 30px;
+        }
+        
+        .clock-box {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: default;
+        }
+        
+        .clock-box:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+        }
+        
+        .clock-box-featured {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #667eea15, #764ba215);
+            font-weight: 600;
+        }
+        
+        .clock-emoji {
+            font-size: 28px;
+            display: block;
+            margin-bottom: 8px;
+        }
+        
+        .clock-label {
+            font-size: 12px;
+            color: #666;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        
+        .clock-label-text {
+            display: block;
+        }
+        
+        .clock-time {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 6px;
+        }
+        
+        .clock-meta {
+            font-size: 11px;
+            color: #999;
+        }
+        
+        .tz {
+            display: inline-block;
+        }
+        
+        #on-air-panel {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #ef4444;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 14px;
+            box-shadow: 0 10px 25px rgba(239, 68, 68, 0.3);
+            animation: pulse 2s infinite;
+        }
+        
+        #on-air-panel[hidden] {
+            display: none;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.7;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 22px;
+            }
+            
+            .countdown-display {
+                gap: 10px;
+            }
+            
+            .countdown-value {
+                font-size: 28px;
+            }
+            
+            .tz-grid {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌍 Meeting Times</h1>
+        <p class="subtitle">Next meeting in your timezone</p>
+        
+        <div class="meeting-info">
+            <div class="meeting-time">
+                <label>Sydney Base Time:</label>
+                <div>
+                    <div class="meeting-time-value">
+                        <span id="sydney-time-value">--:-- --</span>
+                        <span id="sydney-time-zone" style="font-size: 12px; color: #999; display: block; margin-top: 4px;"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="countdown">
+            <div class="countdown-label">Time Until Next Meeting</div>
+            <div class="countdown-display">
+                <div class="countdown-unit">
+                    <div class="countdown-value" id="countdown-hours">00</div>
+                    <div class="countdown-label-small">Hours</div>
+                </div>
+                <div class="countdown-separator">:</div>
+                <div class="countdown-unit">
+                    <div class="countdown-value" id="countdown-minutes">00</div>
+                    <div class="countdown-label-small">Minutes</div>
+                </div>
+                <div class="countdown-separator" id="countdown-seconds-sep">:</div>
+                <div class="countdown-unit" id="countdown-seconds-unit">
+                    <div class="countdown-value" id="countdown-seconds">00</div>
+                    <div class="countdown-label-small">Seconds</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="local-time">
+            <div class="local-time-label">Your Local Time for Meeting:</div>
+            <div class="local-time-value" id="local-time-value">--:-- --</div>
+            <div class="local-time-meta" id="local-time-meta">--</div>
+        </div>
+        
+        <div>
+            <div style="font-size: 14px; color: #666; font-weight: 600; margin-bottom: 15px;">Meeting Times by Timezone:</div>
+            <ul class="tz-grid" id="start-times"></ul>
+        </div>
+    </div>
+    
+    <div id="on-air-panel" hidden>🔴 LIVE NOW</div>
+
+    <script>
         (function(){
         // Master IIFE so we can keep the global scope clean while powering every interactive element on the page.
         // --- Load meeting config from timezones.json ---
@@ -179,3 +491,6 @@
             setInterval(updateOnAir, 15000);
         })();
         })();
+    </script>
+</body>
+</html>
