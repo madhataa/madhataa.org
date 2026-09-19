@@ -7,7 +7,7 @@
   },
   "zones": [
     { "label": "Perth", "tz": "Australia/Perth", "emoji": "🌅" },
-    { "label": "Adelaide", "tz": "Australia/Adelaide", "emoji": "🍷" },
+    { "label": "Adelaide", "tz": "Australia/Adelaide", "emoji": "⛪" },
     { "label": "Melbourne", "tz": "Australia/Melbourne", "emoji": "🎭" },
     { "label": "Roma, QLD", "tz": "Australia/Brisbane", "emoji": "🌾" },
     { "label": "Christchurch", "tz": "Pacific/Auckland", "emoji": "🥝" },
