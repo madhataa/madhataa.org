@@ -93,9 +93,18 @@
             update(); setInterval(update, 1000);
         })();
 
+        // Full variety is retained; only the spawn rate and active count are reduced.
         const deco = document.querySelector('.decorations');
-        const emojis = ['😀','🎩','🎶','🌻','⭐','🐕','🎟️','🌈'];
-        const addEmoji = direction => { if (!deco) return; const span = document.createElement('span'); span.className = 'emoji'; span.setAttribute('aria-hidden', 'true'); span.textContent = emojis[Math.floor(Math.random() * emojis.length)]; span.style.fontSize = `${22 + Math.random() * 16}px`; span.style.bottom = `${8 + Math.random() * 22}vh`; span.style.opacity = '0.75'; span.style[direction === 'right' ? 'left' : 'right'] = '-8%'; span.style.animation = `${direction === 'right' ? 'move-right' : 'move-left'} 14000ms linear forwards`; deco.appendChild(span); span.addEventListener('animationend', () => span.remove(), { once:true }); };
+        const emojis = [
+            '😀','😃','😄','😁','😆','😅','😂','🤣','😊','😇','🙂','🙃','😉','😌','😋','😛','😜','🤪','😝','🤗','🤭','🤫','🤔','🤐','🤨','😐',
+            '🎩','👒','🧢','👑','⛑️','🪖','👷','👨‍✈️','👲','👳','🤠','🧑🏻‍🦱','🧑🏾‍🦱','👩🏼‍🦳','👩🏾‍🦱','👨🏻‍🦰','👨',
+            '🎵','🎶','🎼','🎧','🎤','🎷','🎸','🎹','🎺','🎻','🥁','🪘','🪗','🪕',
+            '🌾','🌻','🌽','🌵','🌙','⭐','🍂','❤️','🐎','🐄','🐑','🐖','🐓','🐕',
+            '🚜','🚚','🚛','🚒','🚓','🚐','🚍','🚎',
+            '🎟️','🎠','🏕️','🌈',
+            '⚡','🐧'
+        ];
+        const addEmoji = direction => { if (!deco) return; const span = document.createElement('span'); span.className = 'emoji'; span.setAttribute('aria-hidden', 'true'); const inner = document.createElement('span'); inner.className = 'flip-inner'; inner.textContent = emojis[Math.floor(Math.random() * emojis.length)]; if (direction === 'right') span.appendChild(inner); else span.appendChild(inner); span.style.fontSize = `${22 + Math.random() * 16}px`; span.style.bottom = `${8 + Math.random() * 22}vh`; span.style.opacity = '0.75'; span.style[direction === 'right' ? 'left' : 'right'] = '-8%'; span.style.animation = `${direction === 'right' ? 'move-right' : 'move-left'} 14000ms linear forwards`; deco.appendChild(span); span.addEventListener('animationend', () => span.remove(), { once:true }); };
         if (!lowEffects) { addEmoji('right'); addEmoji('left'); setInterval(() => addEmoji('right'), 2500); setInterval(() => addEmoji('left'), 2500); } else if (deco) deco.hidden = true;
 
         const canvas = document.getElementById('particles');
