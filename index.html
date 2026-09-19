@@ -2,90 +2,42 @@
 <!-- Licensed under The Unlicense: see LICENSE or https://unlicense.org/ -->
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MaD-HaTTeRs</title>
-    <meta name="description" content="Daily worldwide AA meeting streaming live at 10:30 AM GMT via Zoom. Join MaD-HaTTeRs for fellowship every single day.">
-    <link rel="canonical" href="https://madhataa.org/">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-    <link rel="manifest" href="/site.webmanifest">
-    <meta name="theme-color" content="#f5d86a">
-    <meta name="msapplication-TileColor" content="#12070f">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://madhataa.org/">
-    <meta property="og:title" content="MaD-HaTTeRs Worldwide AA Meeting">
-    <meta property="og:description" content="Daily AA meeting live at 10:30 AM GMT. Join MaD-HaTTeRs on Zoom any day of the year.">
-    <meta property="og:image" content="https://madhataa.org/og-image.png">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="MaD-HaTTeRs Worldwide AA Meeting">
-    <meta name="twitter:description" content="Daily AA meeting live at 10:30 AM GMT via Zoom.">
-    <meta name="twitter:image" content="https://madhataa.org/og-image.png">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MaD-HaTTeRs</title>
+<meta name="description" content="Daily worldwide AA meeting streaming live at 10:30 AM GMT via Zoom. Join MaD-HaTTeRs for fellowship every single day.">
+<link rel="canonical" href="https://madhataa.org/"><link rel="stylesheet" href="styles.css">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="manifest" href="/site.webmanifest"><meta name="theme-color" content="#f5d86a"><meta name="msapplication-TileColor" content="#12070f">
+<meta property="og:type" content="website"><meta property="og:url" content="https://madhataa.org/"><meta property="og:title" content="MaD-HaTTeRs Worldwide AA Meeting"><meta property="og:description" content="Daily AA meeting live at 10:30 AM GMT. Join MaD-HaTTeRs on Zoom any day of the year."><meta property="og:image" content="https://madhataa.org/og-image.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="MaD-HaTTeRs Worldwide AA Meeting"><meta name="twitter:description" content="Daily AA meeting live at 10:30 AM GMT via Zoom."><meta name="twitter:image" content="https://madhataa.org/og-image.png">
 </head>
 <body>
-    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark/light mode">🌙</button>
-    <main class="hero" role="main">
-        <div class="gradient" aria-hidden="true"></div>
-        <canvas id="particles" aria-hidden="true"></canvas>
-        <div class="decorations" aria-hidden="true"></div>
-        <div class="card container">
-            <div class="poster-top" aria-hidden="true"><span class="ticket-label">Worldwide AA Meeting</span><span class="ticket-year">EST 2020</span></div>
-            <h1 class="site-title" data-text="MaD-HaTTeRs">MaD-HaTTeRs</h1>
-            <p class="reflections-link">Daily Reflections Meeting — <a href="https://www.aa.org/daily-reflections" target="_blank" rel="noopener">Read today's reflection</a></p>
-            <p class="dateline"><span>📣 Live from the <span style="display:inline-block;transform:scaleX(-1)">📣</span></span><span>🎶 Entertainment Capital of the Universe 🎶</span><span>🌊 Sydney, Australia! 🇦🇺</span></p>
-            <section id="start-time-section" aria-labelledby="start-time-heading">
-                <h2 id="start-time-heading">We're Here Every Day of the Year!</h2>
-                <div class="start-time-lines" aria-live="polite">
-                    <p class="start-line sydney-line"><span class="time-label">Sydney</span><span id="sydney-time-value" class="time-value">--:--</span><span id="sydney-time-zone" class="time-zone"></span></p>
-                    <p class="start-line"><span class="time-label">England</span><span id="england-time-value" class="time-value">10:30 AM</span><span id="england-time-zone" class="time-zone">London time</span><span class="time-note" aria-label="Meeting duration">Runs for one and a half hours</span></p>
-                </div>
-                <div class="local-clock" aria-live="polite">
-                    <div class="local-clock-label">Your timezone</div>
-                    <div class="local-clock-display" role="group" aria-label="Local meeting start"><span id="local-time-value" class="local-clock-value">00:00</span><span id="local-time-meta" class="local-clock-meta">Local TZ</span></div>
-                    <div class="countdown" aria-label="Countdown to next start" aria-live="polite"><div class="countdown-label">Next meeting in</div><div class="countdown-grid" role="group" aria-label="Hours minutes seconds"><div class="countdown-unit"><span id="countdown-hours" class="countdown-value">00</span><span class="countdown-text">hours</span></div><div class="countdown-separator">:</div><div class="countdown-unit"><span id="countdown-minutes" class="countdown-value">00</span><span class="countdown-text">minutes</span></div><div class="countdown-separator" id="countdown-seconds-sep">:</div><div class="countdown-unit" id="countdown-seconds-unit"><span id="countdown-seconds" class="countdown-value">00</span><span class="countdown-text">seconds</span></div></div></div>
-                    <p class="local-clock-note">Calculated entirely in your browser &mdash; nothing leaves this page.</p>
-                </div>
-                <div id="on-air-panel" class="on-air-panel" aria-live="polite" hidden><span class="on-air-light" aria-hidden="true"></span><span class="on-air-text">ON AIR</span></div>
-                <section id="meeting-details" aria-labelledby="meeting-details-heading"><h2 id="meeting-details-heading">Join the session</h2><p class="zoom-link"><a href="https://zoom.us/j/917584869?pwd=AA" rel="noopener" target="_blank">Join on Zoom</a></p><p class="zoom-meta">Meeting ID: <strong>917&nbsp;584&nbsp;869</strong> &ndash; Passcode: <strong>AA</strong></p></section>
-                <div id="start-times" class="times" aria-live="polite"><p>Calculating local times...</p></div>
-            </section>
-        </div>
-    </main>
-    <script>
-    // Meeting time is 10:30 in England (Europe/London), including British Summer Time.
-    (() => {
-        const html = document.documentElement, toggle = document.getElementById('theme-toggle'), key = 'madhataa-theme';
-        const applyTheme = theme => { html.setAttribute('data-theme', theme); toggle.textContent = theme === 'dark' ? '☀️' : '🌙'; toggle.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'); try { localStorage.setItem(key, theme); } catch (_) {} };
-        let saved = null; try { saved = localStorage.getItem(key); } catch (_) {} applyTheme(saved || (window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
-        toggle.addEventListener('click', () => applyTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'));
-        const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches, lowMemory = typeof navigator.deviceMemory === 'number' && navigator.deviceMemory <= 2, saveData = !!navigator.connection?.saveData, lowEffects = reduceMotion || lowMemory || saveData;
-
-        (async () => {
-            let cfg;
-            try { const response = await fetch(`/timezones.json?t=${Date.now()}`, { cache: 'no-store' }); if (!response.ok) throw new Error('timezones.json'); cfg = await response.json(); } catch (error) { console.error('Unable to load timezones.json', error); return; }
-            const meetingCfg = cfg.meeting || { zone: 'Europe/London', hour: 10, minute: 30 }, zones = cfg.zones || [], sourceZone = 'Australia/Sydney';
-            const offset = (date, timeZone) => { const p = Object.fromEntries(new Intl.DateTimeFormat('en-US', { timeZone, hour12: false, year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit', second:'2-digit' }).formatToParts(date).map(x => [x.type, x.value])); return (Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour, +p.minute, +p.second) - date.getTime()) / 60000; };
-            const localDate = (year, month, day, hour, minute, timeZone) => { const guess = Date.UTC(year, month - 1, day, hour, minute); return new Date(guess - offset(new Date(guess), timeZone) * 60000); };
-            const dateParts = (date, timeZone) => new Intl.DateTimeFormat('en-CA', { timeZone, year:'numeric', month:'2-digit', day:'2-digit' }).format(date).split('-').map(Number);
-            const meeting = now => { const [year, month, day] = dateParts(now, meetingCfg.zone); let result = localDate(year, month, day, meetingCfg.hour, meetingCfg.minute, meetingCfg.zone); if (result <= now) { const next = new Date(now.getTime() + 86400000), [y, m, d] = dateParts(next, meetingCfg.zone); result = localDate(y, m, d, meetingCfg.hour, meetingCfg.minute, meetingCfg.zone); } return result; };
-            let target = meeting(new Date()); const $ = id => document.getElementById(id), value = (items, type, fallback = '') => items.find(item => item.type === type)?.value || fallback;
-            const format = (date, timeZone) => new Intl.DateTimeFormat(undefined, { hour:'numeric', minute:'2-digit', hour12:true, timeZone, timeZoneName:'short' }).formatToParts(date);
-            const england = format(target, meetingCfg.zone), sydney = format(target, sourceZone); $('#england-time-value').textContent = `${value(england,'hour','--')}:${value(england,'minute','00')} ${value(england,'dayPeriod')}`; $('#england-time-zone').textContent = value(england, 'timeZoneName', 'London time'); $('#sydney-time-value').textContent = `${value(sydney,'hour','--')}:${value(sydney,'minute','00')} ${value(sydney,'dayPeriod')}`; $('#sydney-time-zone').textContent = ['ACST', 'GMT+9:30'].includes(value(sydney, 'timeZoneName')) ? 'Sydney time' : value(sydney, 'timeZoneName');
-            const grid = document.createElement('ul'); grid.className = 'tz-grid'; zones.forEach(item => { const p = format(target, item.tz), li = document.createElement('li'); li.className = `clock-box${item.featured ? ' clock-box-featured' : ''}`; li.innerHTML = `<div class="clock-label">${item.emoji ? `<span class="clock-emoji" aria-hidden="true">${item.emoji}</span>` : ''}<span class="clock-label-text">${item.label}</span></div><div class="clock-time" aria-hidden="true">${value(p,'hour')}:${value(p,'minute','00')} ${value(p,'dayPeriod')}</div><div class="clock-meta"><span class="tz">${value(p,'timeZoneName')}</span></div>`; grid.appendChild(li); }); $('#start-times').replaceChildren(grid);
-            const localFormatter = new Intl.DateTimeFormat(undefined, { hour:'numeric', minute:'2-digit', hour12:true, timeZoneName:'short' });
-            const update = () => { const now = new Date(); if (now >= target) target = meeting(now); const seconds = Math.max(0, Math.floor((target - now) / 1000)); $('#countdown-hours').textContent = String(Math.floor(seconds / 3600)).padStart(2, '0'); $('#countdown-minutes').textContent = String(Math.floor(seconds % 3600 / 60)).padStart(2, '0'); if (!lowEffects) $('#countdown-seconds').textContent = String(seconds % 60).padStart(2, '0'); const p = localFormatter.formatToParts(target); $('#local-time-value').textContent = `${value(p,'hour','--')}:${value(p,'minute','--')} ${value(p,'dayPeriod')}`; $('#local-time-meta').textContent = value(p,'timeZoneName', Intl.DateTimeFormat().resolvedOptions().timeZone); const live = now >= target && now < new Date(target.getTime() + 5400000); $('#on-air-panel').toggleAttribute('hidden', !live); };
-            if (lowEffects) { $('#countdown-seconds-unit').hidden = true; $('#countdown-seconds-sep').hidden = true; } update(); setInterval(update, 1000);
-        })();
-
-        const deco = document.querySelector('.decorations'), emojis = ['😀','😃','😄','😁','😆','😅','😂','🤣','😊','😇','🙂','🙃','😉','😌','😋','😛','😜','🤪','😝','🤗','🤭','🤫','🤔','🤐','🤨','😐','🎩','👒','🧢','👑','⛑️','🪖','👷','👨‍✈️','👲','👳','🤠','🧑🏻‍🦱','🧑🏾‍🦱','👩🏼‍🦳','👩🏾‍🦱','👨🏻‍🦰','👨','🎵','🎶','🎼','🎧','🎤','🎷','🎸','🎹','🎺','🎻','🥁','🪘','🪗','🪕','🌾','🌻','🌽','🌵','🌙','⭐','🍂','❤️','🐎','🐄','🐑','🐖','🐓','🐕','🚜','🚚','🚛','🚒','🚓','🚐','🚍','🚎','🎟️','🎠','🏕️','🌈','⚡','🐧'];
-        const addEmoji = direction => { if (!deco) return; const span = document.createElement('span'), inner = document.createElement('span'); span.className = 'emoji'; span.setAttribute('aria-hidden', 'true'); inner.className = 'flip-inner'; inner.textContent = emojis[Math.floor(Math.random() * emojis.length)]; span.appendChild(inner); span.style.fontSize = `${22 + Math.random() * 16}px`; span.style.bottom = `${8 + Math.random() * 22}vh`; span.style.opacity = '0.75'; span.style[direction === 'right' ? 'left' : 'right'] = '-8%'; span.style.animation = `${direction === 'right' ? 'move-right' : 'move-left'} 14000ms linear forwards`; deco.appendChild(span); span.addEventListener('animationend', () => span.remove(), { once:true }); };
-        if (!lowEffects) { addEmoji('right'); addEmoji('left'); setInterval(() => addEmoji('right'), 2500); setInterval(() => addEmoji('left'), 2500); } else if (deco) deco.hidden = true;
-        const canvas = document.getElementById('particles'); if (lowEffects) { canvas.hidden = true; return; } const ctx = canvas.getContext('2d'); let width, height; const resize = () => { width = canvas.width = innerWidth; height = canvas.height = innerHeight; }; resize(); addEventListener('resize', resize, { passive:true }); const dots = Array.from({ length: 40 }, () => ({ x:Math.random()*innerWidth, y:Math.random()*innerHeight, r:.5+Math.random()*1.5, dx:(Math.random()-.5)*.3, dy:(Math.random()-.5)*.3, o:.15+Math.random()*.4 })); const draw = () => { ctx.clearRect(0, 0, width, height); for (const dot of dots) { dot.x += dot.dx; dot.y += dot.dy; if (dot.x < 0) dot.x = width; if (dot.x > width) dot.x = 0; if (dot.y < 0) dot.y = height; if (dot.y > height) dot.y = 0; ctx.beginPath(); ctx.arc(dot.x, dot.y, dot.r, 0, Math.PI*2); ctx.fillStyle = `rgba(120,200,255,${dot.o})`; ctx.fill(); } requestAnimationFrame(draw); }; draw();
-    })();
-    </script>
-</body>
-</html>
+<button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark/light mode">🌙</button>
+<main class="hero" role="main"><div class="gradient" aria-hidden="true"></div><canvas id="particles" aria-hidden="true"></canvas><div class="decorations" aria-hidden="true"></div>
+<div class="card container"><div class="poster-top" aria-hidden="true"><span class="ticket-label">Worldwide AA Meeting</span><span class="ticket-year">EST 2020</span></div><h1 class="site-title" data-text="MaD-HaTTeRs">MaD-HaTTeRs</h1><p class="reflections-link">Daily Reflections Meeting — <a href="https://www.aa.org/daily-reflections" target="_blank" rel="noopener">Read today's reflection</a></p><p class="dateline"><span>📣 Live from the <span style="display:inline-block;transform:scaleX(-1)">📣</span></span><span>🎶 Entertainment Capital of the Universe 🎶</span><span>🌊 Sydney, Australia! 🇦🇺</span></p>
+<section id="start-time-section" aria-labelledby="start-time-heading"><h2 id="start-time-heading">We're Here Every Day of the Year!</h2><div class="start-time-lines" aria-live="polite"><p class="start-line sydney-line"><span class="time-label">Sydney</span><span id="sydney-time-value" class="time-value">--:--</span><span id="sydney-time-zone" class="time-zone"></span></p><p class="start-line"><span class="time-label">England</span><span id="england-time-value" class="time-value">10:30 AM</span><span id="england-time-zone" class="time-zone">London time</span><span class="time-note" aria-label="Meeting duration">Runs for one and a half hours</span></p></div>
+<div class="local-clock" aria-live="polite"><div class="local-clock-label">Your timezone</div><div class="local-clock-display" role="group" aria-label="Local meeting start"><span id="local-time-value" class="local-clock-value">00:00</span><span id="local-time-meta" class="local-clock-meta">Local TZ</span></div><div class="countdown" aria-label="Countdown to next start" aria-live="polite"><div class="countdown-label">Next meeting in</div><div class="countdown-grid" role="group" aria-label="Hours minutes seconds"><div class="countdown-unit"><span id="countdown-hours" class="countdown-value">00</span><span class="countdown-text">hours</span></div><div class="countdown-separator">:</div><div class="countdown-unit"><span id="countdown-minutes" class="countdown-value">00</span><span class="countdown-text">minutes</span></div><div class="countdown-separator" id="countdown-seconds-sep">:</div><div class="countdown-unit" id="countdown-seconds-unit"><span id="countdown-seconds" class="countdown-value">00</span><span class="countdown-text">seconds</span></div></div></div><p class="local-clock-note">Calculated entirely in your browser &mdash; nothing leaves this page.</p></div>
+<div id="on-air-panel" class="on-air-panel" aria-live="polite" hidden><span class="on-air-light" aria-hidden="true"></span><span class="on-air-text">ON AIR</span></div><section id="meeting-details" aria-labelledby="meeting-details-heading"><h2 id="meeting-details-heading">Join the session</h2><p class="zoom-link"><a href="https://zoom.us/j/917584869?pwd=AA" rel="noopener" target="_blank">Join on Zoom</a></p><p class="zoom-meta">Meeting ID: <strong>917&nbsp;584&nbsp;869</strong> &ndash; Passcode: <strong>AA</strong></p></section><div id="start-times" class="times" aria-live="polite"><p>Calculating local times...</p></div></section></div></main>
+<script>
+(() => {
+ const $=id=>document.getElementById(id),html=document.documentElement,toggle=$('theme-toggle'),key='madhataa-theme';
+ const theme=t=>{html.dataset.theme=t;toggle.textContent=t==='dark'?'☀️':'🌙';toggle.setAttribute('aria-label',t==='dark'?'Switch to light mode':'Switch to dark mode');try{localStorage.setItem(key,t)}catch{}};let saved=null;try{saved=localStorage.getItem(key)}catch{}theme(saved||(matchMedia?.('(prefers-color-scheme: dark)').matches?'dark':'light'));toggle.onclick=()=>theme(html.dataset.theme==='dark'?'light':'dark');
+ const lowEffects=!!(matchMedia?.('(prefers-reduced-motion: reduce)').matches||(navigator.deviceMemory<=2)||navigator.connection?.saveData);
+ (async()=>{let cfg;try{const r=await fetch(`/timezones.json?t=${Date.now()}`,{cache:'no-store'});if(!r.ok)throw Error('timezones.json');cfg=await r.json()}catch(e){console.error('Unable to load timezones.json',e);return}
+  const meetingCfg=cfg.meeting||{zone:'Europe/London',hour:10,minute:30},zones=cfg.zones||[],sourceZone='Australia/Sydney';
+  const parts=(date,tz,opts={})=>new Intl.DateTimeFormat('en-US',{timeZone:tz,...opts}).formatToParts(date);
+  const fields=(date,tz,opts={})=>Object.fromEntries(parts(date,tz,opts).map(p=>[p.type,p.value]));
+  const offset=(date,tz)=>{const p=fields(date,tz,{hour12:false,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit'});return(Date.UTC(+p.year,+p.month-1,+p.day,+p.hour,+p.minute,+p.second)-date.getTime())/60000};
+  const localDate=(y,m,d,h,min,tz)=>{const guess=Date.UTC(y,m-1,d,h,min);return new Date(guess-offset(new Date(guess),tz)*60000)};
+  // Use formatToParts, not a locale-dependent formatted date string.
+  const calendar=(date,tz)=>{const p=fields(date,tz,{year:'numeric',month:'2-digit',day:'2-digit'});return[+p.year,+p.month,+p.day]};
+  const nextMeeting=now=>{const [y,m,d]=calendar(now,meetingCfg.zone);let target=localDate(y,m,d,meetingCfg.hour,meetingCfg.minute,meetingCfg.zone);if(target<=now){const [ny,nm,nd]=calendar(new Date(now.getTime()+86400000),meetingCfg.zone);target=localDate(ny,nm,nd,meetingCfg.hour,meetingCfg.minute,meetingCfg.zone)}return target};
+  const display=(date,tz)=>fields(date,tz,{hour:'numeric',minute:'2-digit',hour12:true,timeZoneName:'short'}),v=(p,k,f='')=>p[k]||f;
+  let target=nextMeeting(new Date()),s=display(target,sourceZone),e=display(target,meetingCfg.zone);$('sydney-time-value').textContent=`${v(s,'hour','--')}:${v(s,'minute','00')} ${v(s,'dayPeriod')}`;$('sydney-time-zone').textContent='Sydney time';$('england-time-value').textContent=`${v(e,'hour','--')}:${v(e,'minute','00')} ${v(e,'dayPeriod')}`;$('england-time-zone').textContent=v(e,'timeZoneName','London time');
+  const grid=document.createElement('ul');grid.className='tz-grid';zones.forEach(z=>{const p=display(target,z.tz),li=document.createElement('li');li.className=`clock-box${z.featured?' clock-box-featured':''}`;li.innerHTML=`<div class="clock-label">${z.emoji?`<span class="clock-emoji" aria-hidden="true">${z.emoji}</span>`:''}<span class="clock-label-text">${z.label}</span></div><div class="clock-time" aria-hidden="true">${v(p,'hour')}:${v(p,'minute','00')} ${v(p,'dayPeriod')}</div><div class="clock-meta"><span class="tz">${v(p,'timeZoneName')}</span></div>`;grid.appendChild(li)});$('start-times').replaceChildren(grid);
+  if(lowEffects){$('countdown-seconds-unit').hidden=true;$('countdown-seconds-sep').hidden=true}const localFmt={hour:'numeric',minute:'2-digit',hour12:true,timeZoneName:'short'};const update=()=>{const now=new Date();if(now>=target)target=nextMeeting(now);const n=Math.max(0,Math.floor((target-now)/1000));$('countdown-hours').textContent=String(Math.floor(n/3600)).padStart(2,'0');$('countdown-minutes').textContent=String(Math.floor(n%3600/60)).padStart(2,'0');if(!lowEffects)$('countdown-seconds').textContent=String(n%60).padStart(2,'0');const p=fields(target,Intl.DateTimeFormat().resolvedOptions().timeZone,localFmt);$('local-time-value').textContent=`${v(p,'hour','--')}:${v(p,'minute','--')} ${v(p,'dayPeriod')}`;$('local-time-meta').textContent=v(p,'timeZoneName',Intl.DateTimeFormat().resolvedOptions().timeZone);$('on-air-panel').toggleAttribute('hidden',!(now>=target&&now<new Date(target.getTime()+5400000)))};update();setInterval(update,1000);
+ })();
+ const deco=document.querySelector('.decorations'),emojis=['😀','😃','😄','😁','😆','😅','😂','🤣','😊','😇','🙂','🙃','😉','😌','😋','😛','😜','🤪','😝','🤗','🤭','🤫','🤔','🤐','🤨','😐','🎩','👒','🧢','👑','⛑️','🪖','👷','👨‍✈️','👲','👳','🤠','🧑🏻‍🦱','🧑🏾‍🦱','👩🏼‍🦳','👩🏾‍🦱','👨🏻‍🦰','👨','🎵','🎶','🎼','🎧','🎤','🎷','🎸','🎹','🎺','🎻','🥁','🪘','🪗','🪕','🌾','🌻','🌽','🌵','🌙','⭐','🍂','❤️','🐎','🐄','🐑','🐖','🐓','🐕','🚜','🚚','🚛','🚒','🚓','🚐','🚍','🚎','🎟️','🎠','🏕️','🌈','⚡','🐧'];
+ const add=dir=>{if(!deco)return;const x=document.createElement('span');x.className='emoji';x.setAttribute('aria-hidden','true');x.textContent=emojis[Math.floor(Math.random()*emojis.length)];x.style.fontSize=`${22+Math.random()*16}px`;x.style.bottom=`${8+Math.random()*22}vh`;x.style.opacity='.75';x.style[dir==='right'?'left':'right']='-8%';x.style.animation=`${dir==='right'?'move-right':'move-left'} 14000ms linear forwards`;deco.appendChild(x);x.addEventListener('animationend',()=>x.remove(),{once:true})};if(!lowEffects){add('right');add('left');setInterval(()=>add('right'),2500);setInterval(()=>add('left'),2500)}else deco.hidden=true;
+ const canvas=$('particles');if(lowEffects){canvas.hidden=true;return}const ctx=canvas.getContext('2d');let w,h;const resize=()=>{w=canvas.width=innerWidth;h=canvas.height=innerHeight};resize();addEventListener('resize',resize,{passive:true});const dots=Array.from({length:40},()=>({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:.5+Math.random()*1.5,dx:(Math.random()-.5)*.3,dy:(Math.random()-.5)*.3,o:.15+Math.random()*.4}));const draw=()=>{ctx.clearRect(0,0,w,h);for(const d of dots){d.x+=d.dx;d.y+=d.dy;if(d.x<0)d.x=w;if(d.x>w)d.x=0;if(d.y<0)d.y=h;if(d.y>h)d.y=0;ctx.beginPath();ctx.arc(d.x,d.y,d.r,0,Math.PI*2);ctx.fillStyle=`rgba(120,200,255,${d.o})`;ctx.fill()}requestAnimationFrame(draw)};draw();
+})();
+</script>
+</body></html>
