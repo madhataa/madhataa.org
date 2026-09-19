@@ -8,14 +8,12 @@
     <meta name="description" content="Daily worldwide AA meeting streaming live at 10:30 AM GMT via Zoom. Join MaD-HaTTeRs for fellowship every single day.">
     <link rel="canonical" href="https://madhataa.org/">
     <link rel="stylesheet" href="styles.css">
-
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="manifest" href="/site.webmanifest">
     <meta name="theme-color" content="#f5d86a">
     <meta name="msapplication-TileColor" content="#12070f">
-
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://madhataa.org/">
     <meta property="og:title" content="MaD-HaTTeRs Worldwide AA Meeting">
@@ -23,454 +21,88 @@
     <meta property="og:image" content="https://madhataa.org/og-image.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="MaD-HaTTeRs Worldwide AA Meeting">
     <meta name="twitter:description" content="Daily AA meeting live at 10:30 AM GMT via Zoom.">
     <meta name="twitter:image" content="https://madhataa.org/og-image.png">
 </head>
 <body>
-    <!-- Dark / Light toggle -->
     <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark/light mode">🌙</button>
-
-    <!-- Hero layout with layered background elements for depth -->
     <main class="hero" role="main">
-        <!-- Soft gradient wash behind all content -->
         <div class="gradient" aria-hidden="true"></div>
-        <!-- Animated particle canvas lives underneath the card -->
         <canvas id="particles" aria-hidden="true"></canvas>
-
-        <!-- Emoji marquee appended dynamically for capable devices -->
         <div class="decorations" aria-hidden="true"></div>
-
         <div class="card container">
-            <div class="poster-top" aria-hidden="true">
-                <span class="ticket-label">Worldwide AA Meeting
-                </span>
-                <span class="ticket-year">EST 2020</span>
-            </div>
+            <div class="poster-top" aria-hidden="true"><span class="ticket-label">Worldwide AA Meeting</span><span class="ticket-year">EST 2020</span></div>
             <h1 class="site-title" data-text="MaD-HaTTeRs">MaD-HaTTeRs</h1>
-            <p class="reflections-link">
-                    Daily Reflections Meeting —
-                    <a href="https://www.aa.org/daily-reflections" target="_blank" rel="noopener">Read today's reflection</a>
-                </p>
-            <p class="dateline">
-                <span>📣 Live from the <span style="display:inline-block;transform:scaleX(-1)">📣</span> </span>
-                <span>🎶 Entertainment Capital of the Universe 🎶</span>
-                <span>🌊 Sydney, Australia! 🇦🇺 </span>
-            </p>
-            <!-- Schedule & countdown module -->
+            <p class="reflections-link">Daily Reflections Meeting — <a href="https://www.aa.org/daily-reflections" target="_blank" rel="noopener">Read today's reflection</a></p>
+            <p class="dateline"><span>📣 Live from the <span style="display:inline-block;transform:scaleX(-1)">📣</span></span><span>🎶 Entertainment Capital of the Universe 🎶</span><span>🌊 Sydney, Australia! 🇦🇺</span></p>
             <section id="start-time-section" aria-labelledby="start-time-heading">
                 <h2 id="start-time-heading">We're Here Every Day of the Year!</h2>
                 <div class="start-time-lines" aria-live="polite">
-
-                    <p class="start-line sydney-line">
-                        <span class="time-label">Sydney</span>
-                        <span id="sydney-time-value" class="time-value">--:--</span>
-                        <span id="sydney-time-zone" class="time-zone"></span>
-                    </p>
-
-                    <p class="start-line">
-                        <span class="time-label">GMT</span>
-                        <span class="time-value">10:30 AM</span>
-                        <span class="time-zone">UTC/Zulu</span>
-                        <span class="time-note" aria-label="Meeting duration">Runs for one and a half hours</span>
-
-                    </p>
-
+                    <p class="start-line sydney-line"><span class="time-label">Sydney</span><span id="sydney-time-value" class="time-value">--:--</span><span id="sydney-time-zone" class="time-zone"></span></p>
+                    <p class="start-line"><span class="time-label">GMT</span><span class="time-value">10:30 AM</span><span class="time-zone">UTC/Zulu</span><span class="time-note" aria-label="Meeting duration">Runs for one and a half hours</span></p>
                 </div>
-                <!-- Localized clock + countdown resides here -->
                 <div class="local-clock" aria-live="polite">
                     <div class="local-clock-label">Your timezone</div>
-                    <div class="local-clock-display" role="group" aria-label="Local meeting start">
-                        <span id="local-time-value" class="local-clock-value">00:00</span>
-                        <span id="local-time-meta" class="local-clock-meta">Local TZ</span>
-                    </div>
-                    <div class="countdown" aria-label="Countdown to next start" aria-live="polite">
-                        <div class="countdown-label">Next meeting in</div>
-                        <div class="countdown-grid" role="group" aria-label="Hours minutes seconds">
-                            <div class="countdown-unit">
-                                <span id="countdown-hours" class="countdown-value">00</span>
-                                <span class="countdown-text">hours</span>
-                            </div>
-                            <div class="countdown-separator">:</div>
-                            <div class="countdown-unit">
-                                <span id="countdown-minutes" class="countdown-value">00</span>
-                                <span class="countdown-text">minutes</span>
-                            </div>
-                            <div class="countdown-separator" id="countdown-seconds-sep">:</div>
-                            <div class="countdown-unit" id="countdown-seconds-unit">
-                                <span id="countdown-seconds" class="countdown-value">00</span>
-                                <span class="countdown-text">seconds</span>
-                            </div>
-                        </div>
-                    </div>
-                                <p class="local-clock-note">Calculated entirely in your browser &mdash; nothing leaves this page.</p>
-
-                            </div>
-
-                <!-- ON AIR indicator (visible only during the live meeting) -->
-                <div id="on-air-panel" class="on-air-panel" aria-live="polite" hidden>
-                    <span class="on-air-light" aria-hidden="true"></span>
-                    <span class="on-air-text">ON AIR</span>
+                    <div class="local-clock-display" role="group" aria-label="Local meeting start"><span id="local-time-value" class="local-clock-value">00:00</span><span id="local-time-meta" class="local-clock-meta">Local TZ</span></div>
+                    <div class="countdown" aria-label="Countdown to next start" aria-live="polite"><div class="countdown-label">Next meeting in</div><div class="countdown-grid" role="group" aria-label="Hours minutes seconds"><div class="countdown-unit"><span id="countdown-hours" class="countdown-value">00</span><span class="countdown-text">hours</span></div><div class="countdown-separator">:</div><div class="countdown-unit"><span id="countdown-minutes" class="countdown-value">00</span><span class="countdown-text">minutes</span></div><div class="countdown-separator" id="countdown-seconds-sep">:</div><div class="countdown-unit" id="countdown-seconds-unit"><span id="countdown-seconds" class="countdown-value">00</span><span class="countdown-text">seconds</span></div></div></div>
+                    <p class="local-clock-note">Calculated entirely in your browser &mdash; nothing leaves this page.</p>
                 </div>
-
-                <!-- Zoom join block -->
-                <section id="meeting-details" aria-labelledby="meeting-details-heading">
-                    <h2 id="meeting-details-heading">Join the session</h2>
-                    <p class="zoom-link">
-                        <a href="https://zoom.us/j/917584869?pwd=AA" rel="noopener" target="_blank">
-                            Join on Zoom
-                        </a>
-                    </p>
-                    <p class="zoom-meta">Meeting ID: <strong>917&nbsp;584&nbsp;869</strong> &ndash; Passcode: <strong>AA</strong></p>
-                </section>
-
-                <!-- Timezone grid placeholder gets replaced by JS -->
-                <div id="start-times" class="times" aria-live="polite">
-                        <p>Calculating local times...</p>
-                    </div>
+                <div id="on-air-panel" class="on-air-panel" aria-live="polite" hidden><span class="on-air-light" aria-hidden="true"></span><span class="on-air-text">ON AIR</span></div>
+                <section id="meeting-details" aria-labelledby="meeting-details-heading"><h2 id="meeting-details-heading">Join the session</h2><p class="zoom-link"><a href="https://zoom.us/j/917584869?pwd=AA" rel="noopener" target="_blank">Join on Zoom</a></p><p class="zoom-meta">Meeting ID: <strong>917&nbsp;584&nbsp;869</strong> &ndash; Passcode: <strong>AA</strong></p></section>
+                <div id="start-times" class="times" aria-live="polite"><p>Calculating local times...</p></div>
             </section>
         </div>
     </main>
-
     <script>
-    // --- Theme toggle (runs before IIFE to avoid FOUC) ---
-    (function(){
-        const STORAGE_KEY = 'madhataa-theme';
-        const toggle = document.getElementById('theme-toggle');
+    // Keep decorative motion deliberately sparse: the page's meeting information comes first.
+    (() => {
         const html = document.documentElement;
+        const toggle = document.getElementById('theme-toggle');
+        const key = 'madhataa-theme';
+        const applyTheme = theme => { html.setAttribute('data-theme', theme); toggle.textContent = theme === 'dark' ? '☀️' : '🌙'; toggle.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'); try { localStorage.setItem(key, theme); } catch (_) {} };
+        let saved = null; try { saved = localStorage.getItem(key); } catch (_) {}
+        applyTheme(saved || (window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
+        toggle.addEventListener('click', () => applyTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'));
 
-        function applyTheme(theme) {
-            html.setAttribute('data-theme', theme);
-            toggle.textContent = theme === 'dark' ? '☀️' : '🌙';
-            toggle.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
-            try { localStorage.setItem(STORAGE_KEY, theme); } catch(e) {}
-        }
+        const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+        const lowMemory = typeof navigator.deviceMemory === 'number' && navigator.deviceMemory <= 2;
+        const saveData = !!navigator.connection?.saveData;
+        const lowEffects = reduceMotion || lowMemory || saveData;
 
-        // Restore saved preference, or respect OS preference, or default to light
-        const saved = (function(){ try { return localStorage.getItem(STORAGE_KEY); } catch(e){ return null; } })();
-        if (saved) {
-            applyTheme(saved);
-        } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            applyTheme('dark');
-        }
-
-        toggle.addEventListener('click', function() {
-            const current = html.getAttribute('data-theme');
-            applyTheme(current === 'dark' ? 'light' : 'dark');
-        });
-    })();
-
-    (function(){
-        // Master IIFE so we can keep the global scope clean while powering every interactive element on the page.
-        // --- Load meeting config from timezones.json ---
-        (async function() {
+        (async () => {
             let cfg;
-            try {
-                const res = await fetch(`/timezones.json?t=${Date.now()}`, {cache: 'no-store'});
-                if (!res.ok) throw new Error('Failed to load timezones.json');
-                cfg = await res.json();
-            } catch (e) {
-                console.error('Unable to load timezones.json', e);
-                return;
-            }
-
-            // Base meeting time: 7:30 PM Sydney time (Australia/Sydney)
-            const meetingCfg = { zone: 'Australia/Sydney', hour: 19, minute: 30 };
+            try { const response = await fetch(`/timezones.json?t=${Date.now()}`, { cache: 'no-store' }); if (!response.ok) throw new Error('timezones.json'); cfg = await response.json(); } catch (error) { console.error('Unable to load timezones.json', error); return; }
+            const zone = 'Australia/Sydney';
             const zones = cfg.zones || [];
-
-            // Utility: compute offset in minutes for a particular instant in a given IANA timeZone.
-            function offsetInMinutes(date, timeZone) {
-                const dtf = new Intl.DateTimeFormat('en-US', {
-                    hour12: false,
-                    timeZone,
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    second: '2-digit'
-                });
-                const parts = dtf.formatToParts(date);
-                const data = {};
-                parts.forEach(({ type, value }) => { data[type] = value; });
-                const asUtc = Date.UTC(
-                    Number(data.year),
-                    Number(data.month) - 1,
-                    Number(data.day),
-                    Number(data.hour),
-                    Number(data.minute),
-                    Number(data.second || 0)
-                );
-                return (asUtc - date.getTime()) / 60000;
-            }
-
-            // Build a Date (UTC instant) that corresponds to the given local Y/M/D H:M in timeZone.
-            function zonedLocalToUtc(year, month, day, hour, minute, timeZone) {
-                const utcGuess = Date.UTC(year, month - 1, day, hour, minute, 0);
-                const offset = offsetInMinutes(new Date(utcGuess), timeZone);
-                return new Date(utcGuess - offset * 60000);
-            }
-
-            // Build the "next meeting" UTC instant for the meeting zone (Sydney 7:30 PM)
-            function nextMeetingInstant(now = new Date()) {
-                const localParts = new Intl.DateTimeFormat('en-CA', { timeZone: meetingCfg.zone, year: 'numeric', month: '2-digit', day: '2-digit' }).format(now);
-                const [year, month, day] = localParts.split('-').map(Number);
-
-                let candidate = zonedLocalToUtc(year, month, day, meetingCfg.hour, meetingCfg.minute, meetingCfg.zone);
-
-                if (candidate <= now) {
-                    const nextDayRef = new Date(now.getTime() + 24 * 60 * 60 * 1000);
-                    const localPartsNext = new Intl.DateTimeFormat('en-CA', { timeZone: meetingCfg.zone, year: 'numeric', month: '2-digit', day: '2-digit' }).format(nextDayRef);
-                    const [ny, nm, nd] = localPartsNext.split('-').map(Number);
-                    candidate = zonedLocalToUtc(ny, nm, nd, meetingCfg.hour, meetingCfg.minute, meetingCfg.zone);
-                }
-                return candidate;
-            }
-
-            const DAY_MS = 24 * 60 * 60 * 1000;
-            let countdownTarget = nextMeetingInstant(new Date());
-
-            const container = document.getElementById('start-times');
-            const sydneyTimeEl = document.getElementById('sydney-time-value');
-            const sydneyZoneEl = document.getElementById('sydney-time-zone');
-            const localTimeEls = {
-                value: document.getElementById('local-time-value'),
-                meta: document.getElementById('local-time-meta')
-            };
-            const localTimeFormatter = new Intl.DateTimeFormat(undefined, {hour: 'numeric', minute: '2-digit', hour12: true, timeZoneName: 'short'});
-            const countdownEls = {
-                hours: document.getElementById('countdown-hours'),
-                minutes: document.getElementById('countdown-minutes'),
-                seconds: document.getElementById('countdown-seconds')
-            };
-            const countdownSecondsUnit = document.getElementById('countdown-seconds-unit');
-            const countdownSecondsSeparator = document.getElementById('countdown-seconds-sep');
-            const shouldUseLowEffectsMode = (() => {
-                const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-                const lowMemory = typeof navigator.deviceMemory === 'number' && navigator.deviceMemory <= 2;
-                const saveData = navigator.connection && navigator.connection.saveData;
-                return !!(reduceMotion || lowMemory || saveData);
-            })();
-
-            if (shouldUseLowEffectsMode) {
-                if (countdownSecondsUnit) countdownSecondsUnit.style.display = 'none';
-                if (countdownSecondsSeparator) countdownSecondsSeparator.style.display = 'none';
-                countdownEls.seconds = null;
-            }
-
-            // Build zone grid from cfg.zones
-            function renderZoneGrid(utcMeeting) {
-                if (!container) return;
-                container.innerHTML = '';
-                const grid = document.createElement('ul');
-                grid.className = 'tz-grid';
-                zones.forEach(z => {
-                    const parts = new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit', hour12: true, timeZone: z.tz, timeZoneName: 'short' }).formatToParts(utcMeeting);
-                    const hour = parts.find(p => p.type === 'hour')?.value || '';
-                    const minute = parts.find(p => p.type === 'minute')?.value || '00';
-                    const period = parts.find(p => p.type === 'dayPeriod')?.value || '';
-                    const tzRaw = parts.find(p => p.type === 'timeZoneName')?.value || '';
-                    const tzName = tzRaw;
-                    const li = document.createElement('li');
-                    li.className = 'clock-box';
-                    if (z.featured) li.classList.add('clock-box-featured');
-                    li.innerHTML = `
-                        <div class="clock-label">${z.emoji ? `<span class="clock-emoji" aria-hidden="true">${z.emoji}</span>` : ''}<span class="clock-label-text">${z.label}</span></div>
-                        <div class="clock-time" aria-hidden="true">${hour}:${minute} ${period}</div>
-                        <div class="clock-meta"><span class="tz">${tzName}</span></div>
-                    `;
-                    grid.appendChild(li);
-                });
-                container.appendChild(grid);
-            }
-
-            function updateCountdownAndLocal() {
-                const now = new Date();
-                if (now > countdownTarget) countdownTarget = nextMeetingInstant(now);
-
-                const totalSeconds = Math.max(0, Math.floor((countdownTarget - now) / 1000));
-                const hrs = Math.floor(totalSeconds / 3600);
-                const mins = Math.floor((totalSeconds % 3600) / 60);
-                const secs = totalSeconds % 60;
-
-                if (countdownEls.hours) countdownEls.hours.textContent = String(hrs).padStart(2, '0');
-                if (countdownEls.minutes) countdownEls.minutes.textContent = String(mins).padStart(2, '0');
-                if (countdownEls.seconds) countdownEls.seconds.textContent = String(secs).padStart(2, '0');
-
-                if (localTimeEls.value && localTimeEls.meta) {
-                    const parts = localTimeFormatter.formatToParts(countdownTarget);
-                    const hour = parts.find(p => p.type === 'hour')?.value || '--';
-                    const minute = parts.find(p => p.type === 'minute')?.value || '--';
-                    const period = parts.find(p => p.type === 'dayPeriod')?.value || '';
-                    const tzLabel = parts.find(p => p.type === 'timeZoneName')?.value || Intl.DateTimeFormat().resolvedOptions().timeZone || 'Local';
-                    localTimeEls.value.textContent = `${hour}:${minute} ${period}`;
-                    localTimeEls.meta.textContent = tzLabel;
-                }
-            }
-
-            const MEETING_DURATION_MS = 90 * 60 * 1000;
-
-            function updateOnAir() {
-                const onAirPanel = document.getElementById('on-air-panel');
-                if (!onAirPanel) return;
-                const now = new Date();
-                const start = countdownTarget;
-                const end = new Date(start.getTime() + MEETING_DURATION_MS);
-                const isLive = now >= start && now < end;
-                if (isLive) onAirPanel.removeAttribute('hidden');
-                else onAirPanel.setAttribute('hidden', '');
-            }
-
-            // Initialize and render
-            if (sydneyTimeEl) {
-                const sydneyParts = new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit', hour12: true, timeZone: 'Australia/Sydney' }).formatToParts(countdownTarget);
-                const sh = sydneyParts.find(p => p.type === 'hour')?.value || '--';
-                const sm = sydneyParts.find(p => p.type === 'minute')?.value || '00';
-                const sp = sydneyParts.find(p => p.type === 'dayPeriod')?.value || '';
-                sydneyTimeEl.textContent = `${sh}:${sm} ${sp}`;
-                if (sydneyZoneEl) {
-                    const tzRaw = sydneyParts.find(p => p.type === 'timeZoneName')?.value || '';
-                    sydneyZoneEl.textContent = tzRaw;
-                }
-            }
-
-            renderZoneGrid(countdownTarget);
-            updateCountdownAndLocal();
-            updateOnAir();
-            setInterval(updateCountdownAndLocal, 1000);
-            setInterval(updateOnAir, 15000);
+            const offset = (date, timeZone) => { const parts = Object.fromEntries(new Intl.DateTimeFormat('en-US', { timeZone, hour12: false, year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit', second:'2-digit' }).formatToParts(date).map(p => [p.type, p.value])); return (Date.UTC(+parts.year, +parts.month - 1, +parts.day, +parts.hour, +parts.minute, +parts.second) - date.getTime()) / 60000; };
+            const localDate = (year, month, day, hour, minute, timeZone) => { const guess = Date.UTC(year, month - 1, day, hour, minute); return new Date(guess - offset(new Date(guess), timeZone) * 60000); };
+            const meeting = now => { const [year, month, day] = new Intl.DateTimeFormat('en-CA', { timeZone: zone, year:'numeric', month:'2-digit', day:'2-digit' }).format(now).split('-').map(Number); let result = localDate(year, month, day, 19, 30, zone); if (result <= now) { const next = new Date(now.getTime() + 86400000); const [y, m, d] = new Intl.DateTimeFormat('en-CA', { timeZone: zone, year:'numeric', month:'2-digit', day:'2-digit' }).format(next).split('-').map(Number); result = localDate(y, m, d, 19, 30, zone); } return result; };
+            let target = meeting(new Date());
+            const $ = id => document.getElementById(id);
+            const localFormatter = new Intl.DateTimeFormat(undefined, { hour:'numeric', minute:'2-digit', hour12:true, timeZoneName:'short' });
+            const parts = date => localFormatter.formatToParts(date);
+            const value = (items, type, fallback = '') => items.find(item => item.type === type)?.value || fallback;
+            const sydney = parts(target); $('sydney-time-value').textContent = `${value(sydney,'hour','--')}:${value(sydney,'minute','00')} ${value(sydney,'dayPeriod')}`; $('sydney-time-zone').textContent = value(sydney, 'timeZoneName');
+            const grid = document.createElement('ul'); grid.className = 'tz-grid';
+            zones.forEach(item => { const p = new Intl.DateTimeFormat(undefined, { hour:'numeric', minute:'2-digit', hour12:true, timeZone:item.tz, timeZoneName:'short' }).formatToParts(target); const li = document.createElement('li'); li.className = `clock-box${item.featured ? ' clock-box-featured' : ''}`; li.innerHTML = `<div class="clock-label">${item.emoji ? `<span class="clock-emoji" aria-hidden="true">${item.emoji}</span>` : ''}<span class="clock-label-text">${item.label}</span></div><div class="clock-time" aria-hidden="true">${value(p,'hour')}:${value(p,'minute','00')} ${value(p,'dayPeriod')}</div><div class="clock-meta"><span class="tz">${value(p,'timeZoneName')}</span></div>`; grid.appendChild(li); });
+            $('start-times').replaceChildren(grid);
+            const update = () => { const now = new Date(); if (now >= target) target = meeting(now); const seconds = Math.max(0, Math.floor((target - now) / 1000)); $('countdown-hours').textContent = String(Math.floor(seconds / 3600)).padStart(2, '0'); $('countdown-minutes').textContent = String(Math.floor(seconds % 3600 / 60)).padStart(2, '0'); if (!lowEffects) $('countdown-seconds').textContent = String(seconds % 60).padStart(2, '0'); const p = parts(target); $('local-time-value').textContent = `${value(p,'hour','--')}:${value(p,'minute','--')} ${value(p,'dayPeriod')}`; $('local-time-meta').textContent = value(p,'timeZoneName', Intl.DateTimeFormat().resolvedOptions().timeZone); const live = now >= target && now < new Date(target.getTime() + 5400000); $('on-air-panel').toggleAttribute('hidden', !live); };
+            if (lowEffects) { $('countdown-seconds-unit').hidden = true; $('countdown-seconds-sep').hidden = true; }
+            update(); setInterval(update, 1000);
         })();
 
-        // --- Decorative emoji animation (country flair) ---
-        const emojis = [
-            '😀','😃','😄','😁','😆','😅','😂','🤣','😊','😇','🙂','🙃','😉','😌','😋','😛','😜','🤪','😝','🤗','🤭','🤫','🤔','🤐','🤨','😐',
-            '🎩','👒','🧢','👑','⛑️','🪖','👷','👨‍✈️','👲','👳','🤠','🧑🏻‍🦱','🧑🏾‍🦱','👩🏼‍🦳','👩🏾‍🦱','👨🏻‍🦰','👨',
-            '🎵','🎶','🎼','🎧','🎤','🎷','🎸','🎹','🎺','🎻','🥁','🪘','🪗','🪕',
-            '🌾','🌻','🌽','🌵','🌙','⭐','🍂','❤️','🐎','🐄','🐑','🐖','🐓','🐕',
-            '🚜','🚚','🚛','🚒','🚓','🚐','🚍','🚎',
-            '🎟️','🎠','🏕️','🌈',
-            '⚡','🐧'
-        ];
-        const vehicles = new Set(['🚜','🚚','🚛','🚒','🚓','🚐','🚍','🚎']);
-        const animals = new Set(['🐎','🐄','🐑','🐖','🐓','🐕']);
         const deco = document.querySelector('.decorations');
+        const emojis = ['😀','🎩','🎶','🌻','⭐','🐕','🎟️','🌈'];
+        const addEmoji = direction => { if (!deco) return; const span = document.createElement('span'); span.className = 'emoji'; span.setAttribute('aria-hidden', 'true'); span.textContent = emojis[Math.floor(Math.random() * emojis.length)]; span.style.fontSize = `${22 + Math.random() * 16}px`; span.style.bottom = `${8 + Math.random() * 22}vh`; span.style.opacity = '0.75'; span.style[direction === 'right' ? 'left' : 'right'] = '-8%'; span.style.animation = `${direction === 'right' ? 'move-right' : 'move-left'} 14000ms linear forwards`; deco.appendChild(span); span.addEventListener('animationend', () => span.remove(), { once:true }); };
+        if (!lowEffects) { addEmoji('right'); addEmoji('left'); setInterval(() => addEmoji('right'), 2500); setInterval(() => addEmoji('left'), 2500); } else if (deco) deco.hidden = true;
 
-        function createEmojiLTR(){
-            // Left-to-right emoji (horizontally flipped so they face right)
-            if (!deco) return;
-            const span = document.createElement('span');
-            span.className = 'emoji';
-            span.setAttribute('aria-hidden','true');
-            const ch = emojis[Math.floor(Math.random()*emojis.length)];
-
-            const inner = document.createElement('span');
-            inner.className = 'flip-inner';
-            inner.textContent = ch;
-            span.appendChild(inner);
-
-            const size = 18 + Math.random()*36;
-            span.style.fontSize = size + 'px';
-            span.style.opacity = (0.6 + Math.random()*0.4).toFixed(2);
-            span.style.bottom = (5 + Math.random()*28) + 'vh';
-
-            const duration = 8000 + Math.random()*9000;
-            span.style.left = '-8%';
-            span.style.animation = `move-right ${duration}ms linear forwards`;
-
-            deco.appendChild(span);
-            span.addEventListener('animationend', ()=> span.remove(), {once:true});
-        }
-
-        function createEmojiRTL(){
-            // Right-to-left emoji (no flip, default glyph orientation)
-            if (!deco) return;
-            const span = document.createElement('span');
-            span.className = 'emoji';
-            span.setAttribute('aria-hidden','true');
-            const ch = emojis[Math.floor(Math.random()*emojis.length)];
-            span.textContent = ch;
-
-            const size = 18 + Math.random()*36;
-            span.style.fontSize = size + 'px';
-            span.style.opacity = (0.6 + Math.random()*0.4).toFixed(2);
-            span.style.bottom = (5 + Math.random()*28) + 'vh';
-
-            const duration = 8000 + Math.random()*9000;
-            span.style.right = '-8%';
-            span.style.animation = `move-left ${duration}ms linear forwards`;
-
-            deco.appendChild(span);
-            span.addEventListener('animationend', ()=> span.remove(), {once:true});
-        }
-
-        const shouldUseLowEffectsMode = (() => {
-            const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-            const lowMemory = typeof navigator.deviceMemory === 'number' && navigator.deviceMemory <= 2;
-            const saveData = navigator.connection && navigator.connection.saveData;
-            return !!(reduceMotion || lowMemory || saveData);
-        })();
-
-        if (!shouldUseLowEffectsMode) {
-            setInterval(createEmojiLTR, 520);
-            setInterval(createEmojiRTL, 520);
-            for(let i=0;i<10;i++) { createEmojiLTR(); createEmojiRTL(); }
-        } else if (deco) {
-            deco.style.display = 'none';
-        }
-
-        // --- Particle canvas background ---
         const canvas = document.getElementById('particles');
-        const ctx = canvas.getContext('2d');
-        let W, H;
-        function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
-        resize();
-        window.addEventListener('resize', resize);
-
-        // Lightweight particle system for subtle movement behind the card.
-        const dots = Array.from({length: 80}, () => ({
-            x: Math.random() * W,
-            y: Math.random() * H,
-            r: 0.5 + Math.random() * 1.5,
-            dx: (Math.random() - 0.5) * 0.3,
-            dy: (Math.random() - 0.5) * 0.3,
-            o: 0.15 + Math.random() * 0.4
-        }));
-
-        function drawParticles() {
-            // Move each dot, wrap around edges, and draw connective tissue for nearby neighbors.
-            ctx.clearRect(0, 0, W, H);
-            dots.forEach(d => {
-                d.x += d.dx; d.y += d.dy;
-                if (d.x < 0) d.x = W; if (d.x > W) d.x = 0;
-                if (d.y < 0) d.y = H; if (d.y > H) d.y = 0;
-                ctx.beginPath();
-                ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(120, 200, 255, ${d.o})`;
-                ctx.shadowColor = 'rgba(100, 180, 255, 0.6)';
-                ctx.shadowBlur = 6;
-                ctx.fill();
-            });
-            // draw lines between nearby dots
-            for (let i = 0; i < dots.length; i++) {
-                for (let j = i + 1; j < dots.length; j++) {
-                    const dx = dots[i].x - dots[j].x, dy = dots[i].y - dots[j].y;
-                    const dist = Math.sqrt(dx*dx + dy*dy);
-                    if (dist < 120) {
-                        ctx.beginPath();
-                        ctx.moveTo(dots[i].x, dots[i].y);
-                        ctx.lineTo(dots[j].x, dots[j].y);
-                        ctx.strokeStyle = `rgba(100, 180, 255, ${0.08 * (1 - dist/120)})`;
-                        ctx.lineWidth = 0.5;
-                        ctx.stroke();
-                    }
-                }
-            }
-            ctx.shadowBlur = 0;
-            requestAnimationFrame(drawParticles);
-        }
-        drawParticles();
+        if (lowEffects) { canvas.hidden = true; return; }
+        const ctx = canvas.getContext('2d'); let width, height; const resize = () => { width = canvas.width = innerWidth; height = canvas.height = innerHeight; }; resize(); addEventListener('resize', resize, { passive:true });
+        const dots = Array.from({ length: 40 }, () => ({ x:Math.random()*innerWidth, y:Math.random()*innerHeight, r:.5+Math.random()*1.5, dx:(Math.random()-.5)*.3, dy:(Math.random()-.5)*.3, o:.15+Math.random()*.4 }));
+        const draw = () => { ctx.clearRect(0, 0, width, height); for (const dot of dots) { dot.x += dot.dx; dot.y += dot.dy; if (dot.x < 0) dot.x = width; if (dot.x > width) dot.x = 0; if (dot.y < 0) dot.y = height; if (dot.y > height) dot.y = 0; ctx.beginPath(); ctx.arc(dot.x, dot.y, dot.r, 0, Math.PI*2); ctx.fillStyle = `rgba(120,200,255,${dot.o})`; ctx.fill(); } requestAnimationFrame(draw); }; draw();
     })();
     </script>
 </body>
