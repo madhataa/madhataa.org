@@ -41,7 +41,7 @@
                 <h2 id="start-time-heading">We're Here Every Day of the Year!</h2>
                 <div class="start-time-lines" aria-live="polite">
                     <p class="start-line sydney-line"><span class="time-label">Sydney</span><span id="sydney-time-value" class="time-value">--:--</span><span id="sydney-time-zone" class="time-zone"></span></p>
-                    <p class="start-line"><span class="time-label">GMT</span><span class="time-value">10:30 AM</span><span class="time-zone">UTC/Zulu</span><span class="time-note" aria-label="Meeting duration">Runs for one and a half hours</span></p>
+                    <p class="start-line"><span class="time-label">England</span><span id="england-time-value" class="time-value">10:30 AM</span><span id="england-time-zone" class="time-zone">London time</span><span class="time-note" aria-label="Meeting duration">Runs for one and a half hours</span></p>
                 </div>
                 <div class="local-clock" aria-live="polite">
                     <div class="local-clock-label">Your timezone</div>
@@ -56,62 +56,35 @@
         </div>
     </main>
     <script>
-    // Keep decorative motion deliberately sparse: the page's meeting information comes first.
+    // Meeting time is 10:30 in England (Europe/London), including British Summer Time.
     (() => {
-        const html = document.documentElement;
-        const toggle = document.getElementById('theme-toggle');
-        const key = 'madhataa-theme';
+        const html = document.documentElement, toggle = document.getElementById('theme-toggle'), key = 'madhataa-theme';
         const applyTheme = theme => { html.setAttribute('data-theme', theme); toggle.textContent = theme === 'dark' ? '☀️' : '🌙'; toggle.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'); try { localStorage.setItem(key, theme); } catch (_) {} };
-        let saved = null; try { saved = localStorage.getItem(key); } catch (_) {}
-        applyTheme(saved || (window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
+        let saved = null; try { saved = localStorage.getItem(key); } catch (_) {} applyTheme(saved || (window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
         toggle.addEventListener('click', () => applyTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'));
-
-        const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-        const lowMemory = typeof navigator.deviceMemory === 'number' && navigator.deviceMemory <= 2;
-        const saveData = !!navigator.connection?.saveData;
-        const lowEffects = reduceMotion || lowMemory || saveData;
+        const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches, lowMemory = typeof navigator.deviceMemory === 'number' && navigator.deviceMemory <= 2, saveData = !!navigator.connection?.saveData, lowEffects = reduceMotion || lowMemory || saveData;
 
         (async () => {
             let cfg;
             try { const response = await fetch(`/timezones.json?t=${Date.now()}`, { cache: 'no-store' }); if (!response.ok) throw new Error('timezones.json'); cfg = await response.json(); } catch (error) { console.error('Unable to load timezones.json', error); return; }
-            const zone = 'Australia/Sydney';
-            const zones = cfg.zones || [];
-            const offset = (date, timeZone) => { const parts = Object.fromEntries(new Intl.DateTimeFormat('en-US', { timeZone, hour12: false, year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit', second:'2-digit' }).formatToParts(date).map(p => [p.type, p.value])); return (Date.UTC(+parts.year, +parts.month - 1, +parts.day, +parts.hour, +parts.minute, +parts.second) - date.getTime()) / 60000; };
+            const meetingCfg = cfg.meeting || { zone: 'Europe/London', hour: 10, minute: 30 }, zones = cfg.zones || [], sourceZone = 'Australia/Sydney';
+            const offset = (date, timeZone) => { const p = Object.fromEntries(new Intl.DateTimeFormat('en-US', { timeZone, hour12: false, year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit', second:'2-digit' }).formatToParts(date).map(x => [x.type, x.value])); return (Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour, +p.minute, +p.second) - date.getTime()) / 60000; };
             const localDate = (year, month, day, hour, minute, timeZone) => { const guess = Date.UTC(year, month - 1, day, hour, minute); return new Date(guess - offset(new Date(guess), timeZone) * 60000); };
-            const meeting = now => { const [year, month, day] = new Intl.DateTimeFormat('en-CA', { timeZone: zone, year:'numeric', month:'2-digit', day:'2-digit' }).format(now).split('-').map(Number); let result = localDate(year, month, day, 19, 30, zone); if (result <= now) { const next = new Date(now.getTime() + 86400000); const [y, m, d] = new Intl.DateTimeFormat('en-CA', { timeZone: zone, year:'numeric', month:'2-digit', day:'2-digit' }).format(next).split('-').map(Number); result = localDate(y, m, d, 19, 30, zone); } return result; };
-            let target = meeting(new Date());
-            const $ = id => document.getElementById(id);
+            const dateParts = (date, timeZone) => new Intl.DateTimeFormat('en-CA', { timeZone, year:'numeric', month:'2-digit', day:'2-digit' }).format(date).split('-').map(Number);
+            const meeting = now => { const [year, month, day] = dateParts(now, meetingCfg.zone); let result = localDate(year, month, day, meetingCfg.hour, meetingCfg.minute, meetingCfg.zone); if (result <= now) { const next = new Date(now.getTime() + 86400000), [y, m, d] = dateParts(next, meetingCfg.zone); result = localDate(y, m, d, meetingCfg.hour, meetingCfg.minute, meetingCfg.zone); } return result; };
+            let target = meeting(new Date()); const $ = id => document.getElementById(id), value = (items, type, fallback = '') => items.find(item => item.type === type)?.value || fallback;
+            const format = (date, timeZone) => new Intl.DateTimeFormat(undefined, { hour:'numeric', minute:'2-digit', hour12:true, timeZone, timeZoneName:'short' }).formatToParts(date);
+            const england = format(target, meetingCfg.zone), sydney = format(target, sourceZone); $('#england-time-value').textContent = `${value(england,'hour','--')}:${value(england,'minute','00')} ${value(england,'dayPeriod')}`; $('#england-time-zone').textContent = value(england, 'timeZoneName', 'London time'); $('#sydney-time-value').textContent = `${value(sydney,'hour','--')}:${value(sydney,'minute','00')} ${value(sydney,'dayPeriod')}`; $('#sydney-time-zone').textContent = value(sydney, 'timeZoneName');
+            const grid = document.createElement('ul'); grid.className = 'tz-grid'; zones.forEach(item => { const p = format(target, item.tz), li = document.createElement('li'); li.className = `clock-box${item.featured ? ' clock-box-featured' : ''}`; li.innerHTML = `<div class="clock-label">${item.emoji ? `<span class="clock-emoji" aria-hidden="true">${item.emoji}</span>` : ''}<span class="clock-label-text">${item.label}</span></div><div class="clock-time" aria-hidden="true">${value(p,'hour')}:${value(p,'minute','00')} ${value(p,'dayPeriod')}</div><div class="clock-meta"><span class="tz">${value(p,'timeZoneName')}</span></div>`; grid.appendChild(li); }); $('#start-times').replaceChildren(grid);
             const localFormatter = new Intl.DateTimeFormat(undefined, { hour:'numeric', minute:'2-digit', hour12:true, timeZoneName:'short' });
-            const parts = date => localFormatter.formatToParts(date);
-            const value = (items, type, fallback = '') => items.find(item => item.type === type)?.value || fallback;
-            const sydney = parts(target); $('sydney-time-value').textContent = `${value(sydney,'hour','--')}:${value(sydney,'minute','00')} ${value(sydney,'dayPeriod')}`; $('sydney-time-zone').textContent = value(sydney, 'timeZoneName');
-            const grid = document.createElement('ul'); grid.className = 'tz-grid';
-            zones.forEach(item => { const p = new Intl.DateTimeFormat(undefined, { hour:'numeric', minute:'2-digit', hour12:true, timeZone:item.tz, timeZoneName:'short' }).formatToParts(target); const li = document.createElement('li'); li.className = `clock-box${item.featured ? ' clock-box-featured' : ''}`; li.innerHTML = `<div class="clock-label">${item.emoji ? `<span class="clock-emoji" aria-hidden="true">${item.emoji}</span>` : ''}<span class="clock-label-text">${item.label}</span></div><div class="clock-time" aria-hidden="true">${value(p,'hour')}:${value(p,'minute','00')} ${value(p,'dayPeriod')}</div><div class="clock-meta"><span class="tz">${value(p,'timeZoneName')}</span></div>`; grid.appendChild(li); });
-            $('start-times').replaceChildren(grid);
-            const update = () => { const now = new Date(); if (now >= target) target = meeting(now); const seconds = Math.max(0, Math.floor((target - now) / 1000)); $('countdown-hours').textContent = String(Math.floor(seconds / 3600)).padStart(2, '0'); $('countdown-minutes').textContent = String(Math.floor(seconds % 3600 / 60)).padStart(2, '0'); if (!lowEffects) $('countdown-seconds').textContent = String(seconds % 60).padStart(2, '0'); const p = parts(target); $('local-time-value').textContent = `${value(p,'hour','--')}:${value(p,'minute','--')} ${value(p,'dayPeriod')}`; $('local-time-meta').textContent = value(p,'timeZoneName', Intl.DateTimeFormat().resolvedOptions().timeZone); const live = now >= target && now < new Date(target.getTime() + 5400000); $('on-air-panel').toggleAttribute('hidden', !live); };
-            if (lowEffects) { $('countdown-seconds-unit').hidden = true; $('countdown-seconds-sep').hidden = true; }
-            update(); setInterval(update, 1000);
+            const update = () => { const now = new Date(); if (now >= target) target = meeting(now); const seconds = Math.max(0, Math.floor((target - now) / 1000)); $('#countdown-hours').textContent = String(Math.floor(seconds / 3600)).padStart(2, '0'); $('#countdown-minutes').textContent = String(Math.floor(seconds % 3600 / 60)).padStart(2, '0'); if (!lowEffects) $('#countdown-seconds').textContent = String(seconds % 60).padStart(2, '0'); const p = localFormatter.formatToParts(target); $('#local-time-value').textContent = `${value(p,'hour','--')}:${value(p,'minute','--')} ${value(p,'dayPeriod')}`; $('#local-time-meta').textContent = value(p,'timeZoneName', Intl.DateTimeFormat().resolvedOptions().timeZone); const live = now >= target && now < new Date(target.getTime() + 5400000); $('#on-air-panel').toggleAttribute('hidden', !live); };
+            if (lowEffects) { $('#countdown-seconds-unit').hidden = true; $('#countdown-seconds-sep').hidden = true; } update(); setInterval(update, 1000);
         })();
 
-        // Full variety is retained; only the spawn rate and active count are reduced.
-        const deco = document.querySelector('.decorations');
-        const emojis = [
-            '😀','😃','😄','😁','😆','😅','😂','🤣','😊','😇','🙂','🙃','😉','😌','😋','😛','😜','🤪','😝','🤗','🤭','🤫','🤔','🤐','🤨','😐',
-            '🎩','👒','🧢','👑','⛑️','🪖','👷','👨‍✈️','👲','👳','🤠','🧑🏻‍🦱','🧑🏾‍🦱','👩🏼‍🦳','👩🏾‍🦱','👨🏻‍🦰','👨',
-            '🎵','🎶','🎼','🎧','🎤','🎷','🎸','🎹','🎺','🎻','🥁','🪘','🪗','🪕',
-            '🌾','🌻','🌽','🌵','🌙','⭐','🍂','❤️','🐎','🐄','🐑','🐖','🐓','🐕',
-            '🚜','🚚','🚛','🚒','🚓','🚐','🚍','🚎',
-            '🎟️','🎠','🏕️','🌈',
-            '⚡','🐧'
-        ];
-        const addEmoji = direction => { if (!deco) return; const span = document.createElement('span'); span.className = 'emoji'; span.setAttribute('aria-hidden', 'true'); const inner = document.createElement('span'); inner.className = 'flip-inner'; inner.textContent = emojis[Math.floor(Math.random() * emojis.length)]; if (direction === 'right') span.appendChild(inner); else span.appendChild(inner); span.style.fontSize = `${22 + Math.random() * 16}px`; span.style.bottom = `${8 + Math.random() * 22}vh`; span.style.opacity = '0.75'; span.style[direction === 'right' ? 'left' : 'right'] = '-8%'; span.style.animation = `${direction === 'right' ? 'move-right' : 'move-left'} 14000ms linear forwards`; deco.appendChild(span); span.addEventListener('animationend', () => span.remove(), { once:true }); };
+        const deco = document.querySelector('.decorations'), emojis = ['😀','😃','😄','😁','😆','😅','😂','🤣','😊','😇','🙂','🙃','😉','😌','😋','😛','😜','🤪','😝','🤗','🤭','🤫','🤔','🤐','🤨','😐','🎩','👒','🧢','👑','⛑️','🪖','👷','👨‍✈️','👲','👳','🤠','🧑🏻‍🦱','🧑🏾‍🦱','👩🏼‍🦳','👩🏾‍🦱','👨🏻‍🦰','👨','🎵','🎶','🎼','🎧','🎤','🎷','🎸','🎹','🎺','🎻','🥁','🪘','🪗','🪕','🌾','🌻','🌽','🌵','🌙','⭐','🍂','❤️','🐎','🐄','🐑','🐖','🐓','🐕','🚜','🚚','🚛','🚒','🚓','🚐','🚍','🚎','🎟️','🎠','🏕️','🌈','⚡','🐧'];
+        const addEmoji = direction => { if (!deco) return; const span = document.createElement('span'), inner = document.createElement('span'); span.className = 'emoji'; span.setAttribute('aria-hidden', 'true'); inner.className = 'flip-inner'; inner.textContent = emojis[Math.floor(Math.random() * emojis.length)]; span.appendChild(inner); span.style.fontSize = `${22 + Math.random() * 16}px`; span.style.bottom = `${8 + Math.random() * 22}vh`; span.style.opacity = '0.75'; span.style[direction === 'right' ? 'left' : 'right'] = '-8%'; span.style.animation = `${direction === 'right' ? 'move-right' : 'move-left'} 14000ms linear forwards`; deco.appendChild(span); span.addEventListener('animationend', () => span.remove(), { once:true }); };
         if (!lowEffects) { addEmoji('right'); addEmoji('left'); setInterval(() => addEmoji('right'), 2500); setInterval(() => addEmoji('left'), 2500); } else if (deco) deco.hidden = true;
-
-        const canvas = document.getElementById('particles');
-        if (lowEffects) { canvas.hidden = true; return; }
-        const ctx = canvas.getContext('2d'); let width, height; const resize = () => { width = canvas.width = innerWidth; height = canvas.height = innerHeight; }; resize(); addEventListener('resize', resize, { passive:true });
-        const dots = Array.from({ length: 40 }, () => ({ x:Math.random()*innerWidth, y:Math.random()*innerHeight, r:.5+Math.random()*1.5, dx:(Math.random()-.5)*.3, dy:(Math.random()-.5)*.3, o:.15+Math.random()*.4 }));
-        const draw = () => { ctx.clearRect(0, 0, width, height); for (const dot of dots) { dot.x += dot.dx; dot.y += dot.dy; if (dot.x < 0) dot.x = width; if (dot.x > width) dot.x = 0; if (dot.y < 0) dot.y = height; if (dot.y > height) dot.y = 0; ctx.beginPath(); ctx.arc(dot.x, dot.y, dot.r, 0, Math.PI*2); ctx.fillStyle = `rgba(120,200,255,${dot.o})`; ctx.fill(); } requestAnimationFrame(draw); }; draw();
+        const canvas = document.getElementById('particles'); if (lowEffects) { canvas.hidden = true; return; } const ctx = canvas.getContext('2d'); let width, height; const resize = () => { width = canvas.width = innerWidth; height = canvas.height = innerHeight; }; resize(); addEventListener('resize', resize, { passive:true }); const dots = Array.from({ length: 40 }, () => ({ x:Math.random()*innerWidth, y:Math.random()*innerHeight, r:.5+Math.random()*1.5, dx:(Math.random()-.5)*.3, dy:(Math.random()-.5)*.3, o:.15+Math.random()*.4 })); const draw = () => { ctx.clearRect(0, 0, width, height); for (const dot of dots) { dot.x += dot.dx; dot.y += dot.dy; if (dot.x < 0) dot.x = width; if (dot.x > width) dot.x = 0; if (dot.y < 0) dot.y = height; if (dot.y > height) dot.y = 0; ctx.beginPath(); ctx.arc(dot.x, dot.y, dot.r, 0, Math.PI*2); ctx.fillStyle = `rgba(120,200,255,${dot.o})`; ctx.fill(); } requestAnimationFrame(draw); }; draw();
     })();
     </script>
 </body>
