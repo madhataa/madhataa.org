@@ -12,7 +12,7 @@
     { "label": "Roma, QLD", "tz": "Australia/Brisbane", "emoji": "🌾" },
     { "label": "Christchurch", "tz": "Pacific/Auckland", "emoji": "🥝" },
     { "label": "Portland", "tz": "America/Los_Angeles", "emoji": "🦌" },
-    { "label": "Chicago", "tz": "America/Chicago", "emoji": "🌽" },
+    { "label": "Minneapolis", "tz": "America/Chicago", "emoji": "🌽" },
     { "label": "Boston", "tz": "America/New_York", "emoji": "🏙️" }
   ]
 }
