@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>When the clocks change · MaD-HaTTeRs</title>
-<meta name="description" content="See when each MaD-HaTTeRs timezone changes its clocks, and what time the worldwide meeting will be there.">
+<meta name="description" content="See the actual clock-change dates for each timezone and what time the meeting falls at in each place.">
 <link rel="canonical" href="https://madhataa.org/times.html">
 <link rel="stylesheet" href="styles.css">
 <style>
@@ -51,15 +51,15 @@
     <div class="poster-top" aria-hidden="true"><span class="ticket-label">Worldwide AA Meeting</span><span class="ticket-year">EST 2020</span></div>
     <header class="times-intro">
       <h1 class="site-title" data-text="Clock Changes">Clock Changes</h1>
-      <p>When one place changes its clocks, the meeting moves on the local clock too. Here’s who changes, when it happens, and what their time becomes.</p>
+      <p>These are the actual local clock-change moments for the places on the site, and what time the meeting lands there at that exact instant.</p>
     </header>
     <nav class="times-nav" aria-label="Site navigation"><a href="/">← Back to the meeting</a></nav>
     <section aria-labelledby="legend-heading">
       <h2 id="legend-heading">How to read this</h2>
       <div class="legend">
-        <div class="legend-item"><span class="legend-label">Change moment</span><span class="legend-value">Your local date &amp; time</span></div>
-        <div class="legend-item"><span class="legend-label">Before → after</span><span class="legend-value">Old offset → new offset</span></div>
-        <div class="legend-item"><span class="legend-label">Meeting time</span><span class="legend-value">10:30 AM London time</span></div>
+        <div class="legend-item"><span class="legend-label">Date &amp; time</span><span class="legend-value">Actual local change</span></div>
+        <div class="legend-item"><span class="legend-label">Before → after</span><span class="legend-value">UTC offset moves</span></div>
+        <div class="legend-item"><span class="legend-label">Meeting</span><span class="legend-value">10:30 AM London</span></div>
       </div>
     </section>
     <p id="status" aria-live="polite">Checking the timezone calendars…</p>
@@ -79,16 +79,152 @@
   setTheme(saved || (window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
   toggle.addEventListener('click', () => setTheme(html.dataset.theme === 'dark' ? 'light' : 'dark'));
 
-  const list = document.getElementById('transition-list'), status = document.getElementById('status');
-  const parts = (date, zone, options = {}) => Object.fromEntries(new Intl.DateTimeFormat('en-US', { timeZone: zone, ...options }).formatToParts(date).map(p => [p.type, p.value]));
-  const offset = (date, zone) => { const p = parts(date, zone, { year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:false }); return Date.UTC(+p.year, +p.month-1, +p.day, +p.hour % 24, +p.minute, +p.second) - date.getTime(); };
-  const offsetLabel = milliseconds => { const minutes = Math.round(milliseconds / 60000), sign = minutes >= 0 ? '+' : '-', absolute = Math.abs(minutes); return `UTC${sign}${String(Math.floor(absolute / 60)).padStart(2,'0')}:${String(absolute % 60).padStart(2,'0')}`; };
-  const localDateTime = (date, zone) => new Intl.DateTimeFormat('en-US', { timeZone: zone, weekday:'short', month:'short', day:'numeric', year:'numeric', hour:'numeric', minute:'2-digit', timeZoneName:'short' }).format(date);
-  const transition = (zone, before, after) => { let low = before, high = after; for (let i=0; i<35; i++) { const middle = new Date((low.getTime()+high.getTime())/2); if (offset(middle, zone) === offset(before, zone)) low = middle; else high = middle; } return high; };
-  const findChanges = (zone, start, end) => { const result = []; let cursor = new Date(start), oldOffset = offset(cursor, zone); while (cursor < end) { const next = new Date(Math.min(cursor.getTime() + 86400000, end.getTime())); const newOffset = offset(next, zone); if (newOffset !== oldOffset) { const when = transition(zone, cursor, next); result.push({ when, before: oldOffset, after: newOffset }); oldOffset = newOffset; } cursor = next; } return result; };
-  const escape = value => String(value).replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
-  const render = (zone, item, meeting) => { const name = escape(zone.label), when = localDateTime(item.when, zone.tz); const meetingTime = new Intl.DateTimeFormat('en-US', { timeZone: zone.tz, hour:'numeric', minute:'2-digit', hour12:true, timeZoneName:'short' }).format(item.when); return `<article class="transition-card"><h3>${zone.emoji || '🕰️'} ${name} <span>(${escape(zone.tz)})</span></h3><p class="change-date">${escape(when)}</p><div class="change-row"><div class="change-side"><strong>${escape(offsetLabel(item.before))}</strong><small>before</small></div><span class="arrow" aria-hidden="true">→</span><div class="change-side"><strong>${escape(offsetLabel(item.after))}</strong><small>after</small></div></div><p class="meeting-at">At this moment, the meeting is <strong>${escape(meetingTime)}</strong> here.</p></article>`; };
-  (async () => { try { const response = await fetch(`/timezones.json?t=${Date.now()}`, { cache:'no-store' }); if (!response.ok) throw new Error(`HTTP ${response.status}`); const config = await response.json(); const zones = Array.isArray(config.zones) ? config.zones : []; const meetingZone = config.meeting?.zone || 'Europe/London'; const allZones = [{ label:'London', tz:meetingZone, emoji:'🇬🇧' }, ...zones.filter(zone => zone.tz !== meetingZone)]; const start = new Date(); const end = new Date(start.getTime() + 548 * 86400000); const changes = allZones.flatMap(zone => findChanges(zone.tz, start, end).map(item => ({ zone, item }))).sort((a,b) => a.item.when - b.item.when); if (!changes.length) list.innerHTML = '<p class="no-change">No clock changes are scheduled in the next 18 months for the listed places.</p>'; else list.innerHTML = changes.map(change => render(change.zone, change.item, meetingZone)).join(''); status.textContent = `Showing changes from ${start.toLocaleDateString()} through ${end.toLocaleDateString()}. Times are based on each place’s current IANA timezone rules.`; } catch (error) { status.textContent = 'The timezone calendar could not be loaded. Please try again later.'; list.innerHTML = '<p class="no-change">We could not load the timezone list.</p>'; console.error(error); } })();
+  const list = document.getElementById('transition-list');
+  const status = document.getElementById('status');
+
+  const zoneOffsetMinutes = (instant, timeZone) => {
+    const parts = Object.fromEntries(
+      new Intl.DateTimeFormat('en-US', {
+        timeZone,
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false,
+      }).formatToParts(instant).map(part => [part.type, part.value])
+    );
+
+    const utcMillis = Date.UTC(
+      Number(parts.year),
+      Number(parts.month) - 1,
+      Number(parts.day),
+      Number(parts.hour),
+      Number(parts.minute),
+      Number(parts.second)
+    );
+
+    return Math.round((utcMillis - instant.getTime()) / 60000);
+  };
+
+  const formatOffset = minutes => {
+    const sign = minutes >= 0 ? '+' : '-';
+    const value = Math.abs(minutes);
+    const hours = Math.floor(value / 60);
+    const rem = value % 60;
+    return `UTC${sign}${String(hours).padStart(2, '0')}:${String(rem).padStart(2, '0')}`;
+  };
+
+  const formatDateTime = (instant, timeZone) => new Intl.DateTimeFormat('en-US', {
+    timeZone,
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+    timeZoneName: 'short'
+  }).format(instant);
+
+  const formatMeetingTime = (instant, timeZone) => new Intl.DateTimeFormat('en-US', {
+    timeZone,
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+    timeZoneName: 'short'
+  }).format(instant);
+
+  const findTransition = (timeZone, start, end) => {
+    const oneDay = 24 * 60 * 60 * 1000;
+    const scanStep = 15 * 60 * 1000;
+
+    let cursor = new Date(start.getTime());
+    const transitions = [];
+
+    while (cursor < end) {
+      const currentOffset = zoneOffsetMinutes(cursor, timeZone);
+      const nextOffset = zoneOffsetMinutes(new Date(cursor.getTime() + scanStep), timeZone);
+
+      if (currentOffset !== nextOffset) {
+        let low = new Date(Math.max(start.getTime(), cursor.getTime() - scanStep));
+        let high = new Date(Math.min(end.getTime(), cursor.getTime() + scanStep * 2));
+        const beforeOffset = currentOffset;
+
+        while (high.getTime() - low.getTime() > 60000) {
+          const mid = new Date((low.getTime() + high.getTime()) / 2);
+          if (zoneOffsetMinutes(mid, timeZone) === beforeOffset) low = mid; else high = mid;
+        }
+
+        const when = new Date((low.getTime() + high.getTime()) / 2);
+        const afterOffset = zoneOffsetMinutes(when, timeZone);
+
+        if (!Number.isNaN(when.getTime())) {
+          transitions.push({ when, before: beforeOffset, after: afterOffset });
+        }
+
+        cursor = new Date(Math.min(end.getTime(), high.getTime() + 2 * scanStep));
+      } else {
+        cursor = new Date(cursor.getTime() + scanStep);
+      }
+
+      if (cursor > end) break;
+    }
+
+    return transitions;
+  };
+
+  const renderCard = (zone, item) => {
+    const when = formatDateTime(item.when, zone.tz);
+    const meetingTime = formatMeetingTime(item.when, zone.tz);
+    const label = zone.label || zone.tz;
+
+    return `
+      <article class="transition-card">
+        <h3>${zone.emoji || '🕰️'} ${label} <span>(${zone.tz})</span></h3>
+        <p class="change-date">${when}</p>
+        <div class="change-row">
+          <div class="change-side"><strong>${formatOffset(item.before)}</strong><small>before</small></div>
+          <span class="arrow" aria-hidden="true">→</span>
+          <div class="change-side"><strong>${formatOffset(item.after)}</strong><small>after</small></div>
+        </div>
+        <p class="meeting-at">At that exact instant, the meeting is <strong>${meetingTime}</strong> there.</p>
+      </article>
+    `;
+  };
+
+  const loadChanges = async () => {
+    try {
+      const response = await fetch(`/timezones.json?t=${Date.now()}`, { cache: 'no-store' });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const config = await response.json();
+      const meetingZone = config.meeting?.zone || 'Europe/London';
+      const zoneList = Array.isArray(config.zones) ? config.zones : [];
+      const allZones = [{ label: 'London', tz: meetingZone, emoji: '🇬🇧' }, ...zoneList.filter(zone => zone.tz !== meetingZone)];
+
+      const start = new Date();
+      const end = new Date(start.getTime() + 548 * 24 * 60 * 60 * 1000);
+
+      const changes = allZones
+        .flatMap(zone => findTransition(zone.tz, start, end).map(item => ({ zone, item })))
+        .sort((a, b) => a.item.when - b.item.when);
+
+      if (!changes.length) {
+        list.innerHTML = '<p class="no-change">No clock changes are scheduled in the next 18 months for the configured places.</p>';
+        status.textContent = 'No up-coming clock changes found for the listed timezones.';
+        return;
+      }
+
+      list.innerHTML = changes.map(change => renderCard(change.zone, change.item)).join('');
+      status.textContent = `Showing actual local changes from ${start.toLocaleDateString()} through ${end.toLocaleDateString()}.`;
+    } catch (error) {
+      console.error(error);
+      list.innerHTML = '<p class="no-change">We couldn’t load the timezone schedule.</p>';
+      status.textContent = 'The timezone calendar could not be loaded. Please try again later.';
+    }
+  };
+
+  loadChanges();
 })();
 </script>
 </body>
