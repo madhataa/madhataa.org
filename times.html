@@ -16,21 +16,23 @@
   .times-intro p { margin-top: .65rem; }
   .times-nav { text-align: center; margin: 1.2rem 0 1.4rem; }
   .times-nav a { color: var(--rust); font-weight: 600; }
+  #status { text-align: center; color: rgba(49,24,12,.65); margin: 1rem 0; min-height: 1.5em; }
+  .loading-dots::after { content: ''; display: inline-block; width: 1.5em; text-align: left; animation: dots 1.2s steps(4, end) infinite; }
+  @keyframes dots { 0% { content: ''; } 25% { content: '.'; } 50% { content: '..'; } 75%, 100% { content: '...'; } }
   .table-wrap { overflow-x: auto; border: 2px dashed rgba(49,24,12,.28); border-radius: 14px; background: rgba(255,255,255,.55); }
   table { width: 100%; border-collapse: collapse; min-width: 620px; }
   caption { padding: 1rem; text-align: left; font-weight: 600; color: rgba(49,24,12,.7); }
   th, td { padding: .85rem 1rem; border-top: 1px solid rgba(49,24,12,.14); vertical-align: middle; }
   th { font-family: 'Barlow Condensed', sans-serif; text-transform: uppercase; letter-spacing: .1em; font-size: .82rem; color: rgba(49,24,12,.65); text-align: left; }
-  td { font-size: .98rem; }
   td:first-child { font-weight: 600; }
   .place { display: flex; align-items: center; gap: .5rem; }
   .zone, .time, .offset { font-family: 'Share Tech Mono', monospace; color: var(--rust); }
   .zone { font-size: .88rem; }
   .time { font-size: 1.15rem; font-weight: 600; white-space: nowrap; }
-  #status { text-align: center; color: rgba(49,24,12,.65); margin: 1rem 0; }
+  .loading-row td { text-align: center; color: rgba(49,24,12,.65); padding: 2rem; }
   .site-footer { text-align: center; margin-top: 1.8rem; }
   [data-theme="dark"] .table-wrap { background: rgba(20,15,10,.62); border-color: rgba(200,150,90,.25); }
-  [data-theme="dark"] caption, [data-theme="dark"] th, [data-theme="dark"] #status { color: rgba(220,200,170,.65); }
+  [data-theme="dark"] caption, [data-theme="dark"] th, [data-theme="dark"] #status, [data-theme="dark"] .loading-row td { color: rgba(220,200,170,.65); }
   [data-theme="dark"] th, [data-theme="dark"] td { border-color: rgba(200,150,90,.2); }
 </style>
 </head>
@@ -42,17 +44,15 @@
     <div class="poster-top" aria-hidden="true"><span class="ticket-label">Worldwide AA Meeting</span><span class="ticket-year">EST 2020</span></div>
     <header class="times-intro">
       <h1 class="site-title" data-text="Meeting times">Meeting times</h1>
-      <p>The meeting starts at <strong id="meeting-label">10:30 AM London time</strong>. Here is what that means where you are.</p>
+      <p>The meeting starts at <strong>10:30 AM London time</strong>. Here is what that means where you are.</p>
     </header>
     <nav class="times-nav" aria-label="Site navigation"><a href="/">← Back to the meeting</a></nav>
-    <p id="status" aria-live="polite">Loading the timezone table…</p>
+    <p id="status" class="loading-dots" aria-live="polite">Loading</p>
     <div class="table-wrap">
       <table>
-        <caption>Current local time for the next meeting</caption>
-        <thead>
-          <tr><th scope="col">Place</th><th scope="col">Timezone</th><th scope="col">Meeting time</th><th scope="col">UTC offset</th></tr>
-        </thead>
-        <tbody id="timezone-list"></tbody>
+        <caption>Local time for the next meeting</caption>
+        <thead><tr><th scope="col">Place</th><th scope="col">Timezone</th><th scope="col">Meeting time</th><th scope="col">UTC offset</th></tr></thead>
+        <tbody id="timezone-list"><tr class="loading-row"><td colspan="4">Loading the timezones</td></tr></tbody>
       </table>
     </div>
     <footer class="site-footer">we made this!</footer>
@@ -60,90 +60,65 @@
 </main>
 <script>
 (() => {
-  const html = document.documentElement;
-  const toggle = document.getElementById('theme-toggle');
-  const key = 'madhataa-theme';
-  let saved = null;
-  try { saved = localStorage.getItem(key); } catch (_) {}
-
+  const root = document.documentElement;
+  const button = document.getElementById('theme-toggle');
+  const saved = (() => { try { return localStorage.getItem('madhataa-theme'); } catch (_) { return null; } })();
   const setTheme = theme => {
-    html.dataset.theme = theme;
-    toggle.textContent = theme === 'dark' ? '☀️' : '🌙';
-    toggle.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+    root.dataset.theme = theme;
+    button.textContent = theme === 'dark' ? '☀️' : '🌙';
+    button.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+    try { localStorage.setItem('madhataa-theme', theme); } catch (_) {}
   };
-  setTheme(saved || (window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
-  toggle.addEventListener('click', () => {
-    const theme = html.dataset.theme === 'dark' ? 'light' : 'dark';
-    setTheme(theme);
-    try { localStorage.setItem(key, theme); } catch (_) {}
-  });
+  setTheme(saved || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
+  button.onclick = () => setTheme(root.dataset.theme === 'dark' ? 'light' : 'dark');
 
+  const zones = [
+    ['🇬🇧', 'London', 'Europe/London'],
+    ['🌅', 'Perth', 'Australia/Perth'],
+    ['⛪', 'Adelaide', 'Australia/Adelaide'],
+    ['🎭', 'Melbourne', 'Australia/Melbourne'],
+    ['🌾', 'Roma, QLD', 'Australia/Brisbane'],
+    ['🥝', 'Christchurch', 'Pacific/Auckland'],
+    ['🦌', 'Portland', 'America/Los_Angeles'],
+    ['🏞️', 'Minneapolis', 'America/Chicago'],
+    ['🏙️', 'Boston', 'America/New_York']
+  ];
   const list = document.getElementById('timezone-list');
   const status = document.getElementById('status');
-  const meetingLabel = document.getElementById('meeting-label');
-
-  const partsFor = (instant, timeZone, options) => Object.fromEntries(
-    new Intl.DateTimeFormat('en-US', { timeZone, ...options }).formatToParts(instant)
-      .map(part => [part.type, part.value])
-  );
-
-  const offsetFor = (instant, timeZone) => {
-    const parts = partsFor(instant, timeZone, {
-      year: 'numeric', month: '2-digit', day: '2-digit',
+  const offsetFor = (date, zone) => {
+    const p = Object.fromEntries(new Intl.DateTimeFormat('en-GB', {
+      timeZone: zone, year: 'numeric', month: '2-digit', day: '2-digit',
       hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23'
-    });
-    const localAsUtc = Date.UTC(
-      Number(parts.year), Number(parts.month) - 1, Number(parts.day),
-      Number(parts.hour) % 24, Number(parts.minute), Number(parts.second)
-    );
-    return Math.round((localAsUtc - instant.getTime()) / 60000);
+    }).formatToParts(date).map(x => [x.type, x.value]));
+    return Math.round((Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour % 24, +p.minute, +p.second) - date.getTime()) / 60000);
   };
-
-  const formatOffset = minutes => {
-    const sign = minutes < 0 ? '-' : '+';
+  const offsetText = minutes => {
     const value = Math.abs(minutes);
-    return `UTC${sign}${String(Math.floor(value / 60)).padStart(2, '0')}:${String(value % 60).padStart(2, '0')}`;
+    return `UTC${minutes < 0 ? '-' : '+'}${String(Math.floor(value / 60)).padStart(2, '0')}:${String(value % 60).padStart(2, '0')}`;
   };
 
-  const escapeHtml = value => String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
+  // Keep the page responsive while the browser performs its small amount of timezone work.
+  setTimeout(() => {
+    try {
+      const now = new Date();
+      const london = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/London', year: 'numeric', month: 'numeric', day: 'numeric' }).formatToParts(now);
+      const date = Object.fromEntries(london.map(x => [x.type, x.value]));
+      let meeting = new Date(Date.UTC(+date.year, +date.month - 1, +date.day, 10, 30));
+      meeting = new Date(meeting.getTime() - offsetFor(meeting, 'Europe/London') * 60000);
+      if (meeting <= now) meeting = new Date(meeting.getTime() + 86400000);
 
-  const render = (config, now) => {
-    const meetingZone = config.meeting?.zone || 'Europe/London';
-    const meetingHour = Number(config.meeting?.hour ?? 10);
-    const meetingMinute = Number(config.meeting?.minute ?? 30);
-    const meetingLabelText = config.meeting?.label || `${meetingHour}:${String(meetingMinute).padStart(2, '0')}`;
-    meetingLabel.textContent = `${meetingLabelText} London time`;
-
-    const zones = [
-      { label: 'London', tz: meetingZone, emoji: '🇬🇧' },
-      ...(Array.isArray(config.zones) ? config.zones : []).filter(zone => zone.tz !== meetingZone)
-    ];
-
-    // The meeting instant is calculated once. Rendering is deliberately just one
-    // formatter call per zone; there is no long-range transition scan.
-    const today = partsFor(now, meetingZone, { year: 'numeric', month: '2-digit', day: '2-digit' });
-    const meetingUtc = new Date(Date.UTC(Number(today.year), Number(today.month) - 1, Number(today.day), meetingHour, meetingMinute));
-    const londonOffset = offsetFor(meetingUtc, meetingZone);
-    const meetingInstant = new Date(meetingUtc.getTime() - londonOffset * 60000);
-
-    list.innerHTML = zones.map(zone => {
-      const local = new Intl.DateTimeFormat('en-US', {
-        timeZone: zone.tz, hour: 'numeric', minute: '2-digit', hour12: true, timeZoneName: 'short'
-      }).format(meetingInstant);
-      return `<tr><td><span class="place"><span aria-hidden="true">${escapeHtml(zone.emoji || '🕰️')}</span>${escapeHtml(zone.label || zone.tz)}</span></td><td class="zone">${escapeHtml(zone.tz)}</td><td class="time">${escapeHtml(local)}</td><td class="offset">${formatOffset(offsetFor(meetingInstant, zone.tz))}</td></tr>`;
-    }).join('');
-
-    status.textContent = `Showing ${zones.length} timezones for the next meeting.`;
-  };
-
-  fetch(`/timezones.json?t=${Date.now()}`, { cache: 'no-store' })
-    .then(response => { if (!response.ok) throw new Error(`HTTP ${response.status}`); return response.json(); })
-    .then(config => render(config, new Date()))
-    .catch(error => {
+      list.innerHTML = zones.map(([emoji, label, zone]) => {
+        const time = new Intl.DateTimeFormat('en-US', { timeZone: zone, hour: 'numeric', minute: '2-digit', hour12: true, timeZoneName: 'short' }).format(meeting);
+        return `<tr><td><span class="place"><span aria-hidden="true">${emoji}</span>${label}</span></td><td class="zone">${zone}</td><td class="time">${time}</td><td class="offset">${offsetText(offsetFor(meeting, zone))}</td></tr>`;
+      }).join('');
+      status.classList.remove('loading-dots');
+      status.textContent = 'Ready — these are the times for the next meeting.';
+    } catch (error) {
       console.error(error);
-      list.innerHTML = '<tr><td colspan="4">We couldn’t load the timezone table.</td></tr>';
-      status.textContent = 'The timezone list could not be loaded. Please try again later.';
-    });
+      status.classList.remove('loading-dots');
+      status.textContent = 'Sorry, the timezone table could not be displayed.';
+    }
+  }, 350);
 })();
 </script>
 </body>
