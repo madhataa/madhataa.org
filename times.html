@@ -4,8 +4,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>When the clocks change · MaD-HaTTeRs</title>
-<meta name="description" content="See the actual clock-change dates for each timezone and what time the meeting falls at in each place.">
+<title>Meeting times around the world · MaD-HaTTeRs</title>
+<meta name="description" content="See what time the meeting is in each timezone.">
 <link rel="canonical" href="https://madhataa.org/times.html">
 <link rel="stylesheet" href="styles.css">
 <style>
@@ -16,31 +16,22 @@
   .times-intro p { margin-top: .65rem; }
   .times-nav { text-align: center; margin: 1.2rem 0 1.4rem; }
   .times-nav a { color: var(--rust); font-weight: 600; }
-  .legend { display: grid; grid-template-columns: repeat(3, 1fr); gap: .7rem; margin: 1.3rem 0 1.6rem; }
-  .legend-item, .transition-card { border: 2px dashed rgba(49,24,12,.28); border-radius: 14px; background: rgba(255,255,255,.55); }
-  .legend-item { padding: .8rem 1rem; text-align: center; }
-  .legend-label { display: block; font-family: 'Barlow Condensed', sans-serif; text-transform: uppercase; letter-spacing: .1em; font-size: .78rem; color: rgba(49,24,12,.62); }
-  .legend-value { display: block; margin-top: .2rem; font-family: 'Share Tech Mono', monospace; color: var(--rust); }
+  .table-wrap { overflow-x: auto; border: 2px dashed rgba(49,24,12,.28); border-radius: 14px; background: rgba(255,255,255,.55); }
+  table { width: 100%; border-collapse: collapse; min-width: 620px; }
+  caption { padding: 1rem; text-align: left; font-weight: 600; color: rgba(49,24,12,.7); }
+  th, td { padding: .85rem 1rem; border-top: 1px solid rgba(49,24,12,.14); vertical-align: middle; }
+  th { font-family: 'Barlow Condensed', sans-serif; text-transform: uppercase; letter-spacing: .1em; font-size: .82rem; color: rgba(49,24,12,.65); text-align: left; }
+  td { font-size: .98rem; }
+  td:first-child { font-weight: 600; }
+  .place { display: flex; align-items: center; gap: .5rem; }
+  .zone, .time, .offset { font-family: 'Share Tech Mono', monospace; color: var(--rust); }
+  .zone { font-size: .88rem; }
+  .time { font-size: 1.15rem; font-weight: 600; white-space: nowrap; }
   #status { text-align: center; color: rgba(49,24,12,.65); margin: 1rem 0; }
-  .transition-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 1rem; }
-  .transition-card { padding: 1.1rem; background: linear-gradient(180deg, rgba(255,255,255,.82), rgba(249,238,219,.72)); }
-  .transition-card h3 { font-family: 'Barlow Condensed', sans-serif; text-transform: uppercase; letter-spacing: .1em; color: var(--ink); font-size: 1.25rem; }
-  .transition-card h3 span { font-family: inherit; font-size: .8em; }
-  .change-date { margin: .35rem 0 .8rem; font-family: 'Special Elite', monospace; color: var(--rust); }
-  .change-row { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: .5rem; }
-  .change-side { padding: .65rem .45rem; border-radius: 10px; background: rgba(255,255,255,.58); text-align: center; }
-  .change-side strong { display: block; font-family: 'Share Tech Mono', monospace; font-size: 1.35rem; color: var(--rust); }
-  .change-side small { display: block; margin-top: .2rem; color: rgba(49,24,12,.62); }
-  .arrow { font-size: 1.35rem; color: var(--rust); }
-  .meeting-at { margin-top: .75rem; padding-top: .65rem; border-top: 1px solid rgba(49,24,12,.16); font-size: .88rem; color: rgba(49,24,12,.72); }
-  .meeting-at strong { color: var(--rust); }
-  .no-change { text-align: center; padding: 1.5rem; }
   .site-footer { text-align: center; margin-top: 1.8rem; }
-  [data-theme="dark"] .legend-item, [data-theme="dark"] .transition-card { background: rgba(20,15,10,.62); border-color: rgba(200,150,90,.25); }
-  [data-theme="dark"] .legend-label, [data-theme="dark"] #status, [data-theme="dark"] .change-side small, [data-theme="dark"] .meeting-at { color: rgba(220,200,170,.65); }
-  [data-theme="dark"] .change-side { background: rgba(30,24,18,.7); }
-  [data-theme="dark"] .change-side, [data-theme="dark"] .meeting-at { border-color: rgba(200,150,90,.2); }
-  @media (max-width: 640px) { .legend { grid-template-columns: 1fr; } .change-row { gap: .25rem; } .change-side strong { font-size: 1.1rem; } }
+  [data-theme="dark"] .table-wrap { background: rgba(20,15,10,.62); border-color: rgba(200,150,90,.25); }
+  [data-theme="dark"] caption, [data-theme="dark"] th, [data-theme="dark"] #status { color: rgba(220,200,170,.65); }
+  [data-theme="dark"] th, [data-theme="dark"] td { border-color: rgba(200,150,90,.2); }
 </style>
 </head>
 <body>
@@ -50,183 +41,109 @@
   <div class="card container">
     <div class="poster-top" aria-hidden="true"><span class="ticket-label">Worldwide AA Meeting</span><span class="ticket-year">EST 2020</span></div>
     <header class="times-intro">
-      <h1 class="site-title" data-text="Clock Changes">Clock Changes</h1>
-      <p>These are the actual local clock-change moments for the places on the site, and what time the meeting lands there at that exact instant.</p>
+      <h1 class="site-title" data-text="Meeting times">Meeting times</h1>
+      <p>The meeting starts at <strong id="meeting-label">10:30 AM London time</strong>. Here is what that means where you are.</p>
     </header>
     <nav class="times-nav" aria-label="Site navigation"><a href="/">← Back to the meeting</a></nav>
-    <section aria-labelledby="legend-heading">
-      <h2 id="legend-heading">How to read this</h2>
-      <div class="legend">
-        <div class="legend-item"><span class="legend-label">Date &amp; time</span><span class="legend-value">Actual local change</span></div>
-        <div class="legend-item"><span class="legend-label">Before → after</span><span class="legend-value">UTC offset moves</span></div>
-        <div class="legend-item"><span class="legend-label">Meeting</span><span class="legend-value">10:30 AM London</span></div>
-      </div>
-    </section>
-    <p id="status" aria-live="polite">Checking the timezone calendars…</p>
-    <section aria-labelledby="changes-heading">
-      <h2 id="changes-heading">Upcoming changes</h2>
-      <div id="transition-list" class="transition-list"></div>
-    </section>
+    <p id="status" aria-live="polite">Loading the timezone table…</p>
+    <div class="table-wrap">
+      <table>
+        <caption>Current local time for the next meeting</caption>
+        <thead>
+          <tr><th scope="col">Place</th><th scope="col">Timezone</th><th scope="col">Meeting time</th><th scope="col">UTC offset</th></tr>
+        </thead>
+        <tbody id="timezone-list"></tbody>
+      </table>
+    </div>
     <footer class="site-footer">we made this!</footer>
   </div>
 </main>
 <script>
 (() => {
-  const html = document.documentElement, toggle = document.getElementById('theme-toggle');
+  const html = document.documentElement;
+  const toggle = document.getElementById('theme-toggle');
   const key = 'madhataa-theme';
-  let saved = null; try { saved = localStorage.getItem(key); } catch (_) {}
-  const setTheme = theme => { html.dataset.theme = theme; toggle.textContent = theme === 'dark' ? '☀️' : '🌙'; toggle.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'); try { localStorage.setItem(key, theme); } catch (_) {} };
+  let saved = null;
+  try { saved = localStorage.getItem(key); } catch (_) {}
+
+  const setTheme = theme => {
+    html.dataset.theme = theme;
+    toggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+    toggle.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+  };
   setTheme(saved || (window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
-  toggle.addEventListener('click', () => setTheme(html.dataset.theme === 'dark' ? 'light' : 'dark'));
+  toggle.addEventListener('click', () => {
+    const theme = html.dataset.theme === 'dark' ? 'light' : 'dark';
+    setTheme(theme);
+    try { localStorage.setItem(key, theme); } catch (_) {}
+  });
 
-  const list = document.getElementById('transition-list');
+  const list = document.getElementById('timezone-list');
   const status = document.getElementById('status');
+  const meetingLabel = document.getElementById('meeting-label');
 
-  const zoneOffsetMinutes = (instant, timeZone) => {
-    const parts = Object.fromEntries(
-      new Intl.DateTimeFormat('en-US', {
-        timeZone,
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hourCycle: 'h23',
-      }).formatToParts(instant).map(part => [part.type, part.value])
+  const partsFor = (instant, timeZone, options) => Object.fromEntries(
+    new Intl.DateTimeFormat('en-US', { timeZone, ...options }).formatToParts(instant)
+      .map(part => [part.type, part.value])
+  );
+
+  const offsetFor = (instant, timeZone) => {
+    const parts = partsFor(instant, timeZone, {
+      year: 'numeric', month: '2-digit', day: '2-digit',
+      hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23'
+    });
+    const localAsUtc = Date.UTC(
+      Number(parts.year), Number(parts.month) - 1, Number(parts.day),
+      Number(parts.hour) % 24, Number(parts.minute), Number(parts.second)
     );
-
-    // Some engines historically returned 24 for midnight even with hour12:false.
-    // h23 normally prevents that; normalize it defensively so the UTC date does
-    // not jump forward by a day and look like a timezone transition.
-    const hour = Number(parts.hour) % 24;
-    const utcMillis = Date.UTC(
-      Number(parts.year),
-      Number(parts.month) - 1,
-      Number(parts.day),
-      hour,
-      Number(parts.minute),
-      Number(parts.second)
-    );
-
-    return Math.round((utcMillis - instant.getTime()) / 60000);
+    return Math.round((localAsUtc - instant.getTime()) / 60000);
   };
 
   const formatOffset = minutes => {
-    const sign = minutes >= 0 ? '+' : '-';
+    const sign = minutes < 0 ? '-' : '+';
     const value = Math.abs(minutes);
-    const hours = Math.floor(value / 60);
-    const rem = value % 60;
-    return `UTC${sign}${String(hours).padStart(2, '0')}:${String(rem).padStart(2, '0')}`;
+    return `UTC${sign}${String(Math.floor(value / 60)).padStart(2, '0')}:${String(value % 60).padStart(2, '0')}`;
   };
 
-  const formatDateTime = (instant, timeZone) => new Intl.DateTimeFormat('en-US', {
-    timeZone,
-    weekday: 'short',
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit',
-    timeZoneName: 'short'
-  }).format(instant);
+  const escapeHtml = value => String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
 
-  const formatMeetingTime = (instant, timeZone) => new Intl.DateTimeFormat('en-US', {
-    timeZone,
-    hour: 'numeric',
-    minute: '2-digit',
-    hour12: true,
-    timeZoneName: 'short'
-  }).format(instant);
+  const render = (config, now) => {
+    const meetingZone = config.meeting?.zone || 'Europe/London';
+    const meetingHour = Number(config.meeting?.hour ?? 10);
+    const meetingMinute = Number(config.meeting?.minute ?? 30);
+    const meetingLabelText = config.meeting?.label || `${meetingHour}:${String(meetingMinute).padStart(2, '0')}`;
+    meetingLabel.textContent = `${meetingLabelText} London time`;
 
-  const findTransition = (timeZone, start, end) => {
-    const scanStep = 15 * 60 * 1000;
-    let cursor = new Date(start.getTime());
-    const transitions = [];
+    const zones = [
+      { label: 'London', tz: meetingZone, emoji: '🇬🇧' },
+      ...(Array.isArray(config.zones) ? config.zones : []).filter(zone => zone.tz !== meetingZone)
+    ];
 
-    while (cursor < end) {
-      const currentOffset = zoneOffsetMinutes(cursor, timeZone);
-      const nextOffset = zoneOffsetMinutes(new Date(cursor.getTime() + scanStep), timeZone);
+    // The meeting instant is calculated once. Rendering is deliberately just one
+    // formatter call per zone; there is no long-range transition scan.
+    const today = partsFor(now, meetingZone, { year: 'numeric', month: '2-digit', day: '2-digit' });
+    const meetingUtc = new Date(Date.UTC(Number(today.year), Number(today.month) - 1, Number(today.day), meetingHour, meetingMinute));
+    const londonOffset = offsetFor(meetingUtc, meetingZone);
+    const meetingInstant = new Date(meetingUtc.getTime() - londonOffset * 60000);
 
-      if (currentOffset !== nextOffset) {
-        let low = new Date(Math.max(start.getTime(), cursor.getTime() - scanStep));
-        let high = new Date(Math.min(end.getTime(), cursor.getTime() + scanStep * 2));
-        const beforeOffset = currentOffset;
+    list.innerHTML = zones.map(zone => {
+      const local = new Intl.DateTimeFormat('en-US', {
+        timeZone: zone.tz, hour: 'numeric', minute: '2-digit', hour12: true, timeZoneName: 'short'
+      }).format(meetingInstant);
+      return `<tr><td><span class="place"><span aria-hidden="true">${escapeHtml(zone.emoji || '🕰️')}</span>${escapeHtml(zone.label || zone.tz)}</span></td><td class="zone">${escapeHtml(zone.tz)}</td><td class="time">${escapeHtml(local)}</td><td class="offset">${formatOffset(offsetFor(meetingInstant, zone.tz))}</td></tr>`;
+    }).join('');
 
-        while (high.getTime() - low.getTime() > 1000) {
-          const mid = new Date((low.getTime() + high.getTime()) / 2);
-          if (zoneOffsetMinutes(mid, timeZone) === beforeOffset) low = mid; else high = mid;
-        }
-
-        const when = new Date((low.getTime() + high.getTime()) / 2);
-        // `when` can still fall just before the boundary. `high` is the first
-        // known instant after it, so use that for the after-transition offset.
-        const afterOffset = zoneOffsetMinutes(high, timeZone);
-
-        if (!Number.isNaN(when.getTime())) {
-          transitions.push({ when, before: beforeOffset, after: afterOffset });
-        }
-
-        cursor = new Date(Math.min(end.getTime(), high.getTime() + 2 * scanStep));
-      } else {
-        cursor = new Date(cursor.getTime() + scanStep);
-      }
-    }
-
-    return transitions;
+    status.textContent = `Showing ${zones.length} timezones for the next meeting.`;
   };
 
-  const renderCard = (zone, item) => {
-    const when = formatDateTime(item.when, zone.tz);
-    const meetingTime = formatMeetingTime(item.when, zone.tz);
-    const label = zone.label || zone.tz;
-
-    return `
-      <article class="transition-card">
-        <h3>${zone.emoji || '🕰️'} ${label} <span>(${zone.tz})</span></h3>
-        <p class="change-date">${when}</p>
-        <div class="change-row">
-          <div class="change-side"><strong>${formatOffset(item.before)}</strong><small>before</small></div>
-          <span class="arrow" aria-hidden="true">→</span>
-          <div class="change-side"><strong>${formatOffset(item.after)}</strong><small>after</small></div>
-        </div>
-        <p class="meeting-at">At that exact instant, the meeting is <strong>${meetingTime}</strong> there.</p>
-      </article>
-    `;
-  };
-
-  const loadChanges = async () => {
-    try {
-      const response = await fetch(`/timezones.json?t=${Date.now()}`, { cache: 'no-store' });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      const config = await response.json();
-      const meetingZone = config.meeting?.zone || 'Europe/London';
-      const zoneList = Array.isArray(config.zones) ? config.zones : [];
-      const allZones = [{ label: 'London', tz: meetingZone, emoji: '🇬🇧' }, ...zoneList.filter(zone => zone.tz !== meetingZone)];
-
-      const start = new Date();
-      const end = new Date(start.getTime() + 548 * 24 * 60 * 60 * 1000);
-
-      const changes = allZones
-        .flatMap(zone => findTransition(zone.tz, start, end).map(item => ({ zone, item })))
-        .sort((a, b) => a.item.when - b.item.when);
-
-      if (!changes.length) {
-        list.innerHTML = '<p class="no-change">No clock changes are scheduled in the next 18 months for the configured places.</p>';
-        status.textContent = 'No up-coming clock changes found for the listed timezones.';
-        return;
-      }
-
-      list.innerHTML = changes.map(change => renderCard(change.zone, change.item)).join('');
-      status.textContent = `Showing actual local changes from ${start.toLocaleDateString()} through ${end.toLocaleDateString()}.`;
-    } catch (error) {
+  fetch(`/timezones.json?t=${Date.now()}`, { cache: 'no-store' })
+    .then(response => { if (!response.ok) throw new Error(`HTTP ${response.status}`); return response.json(); })
+    .then(config => render(config, new Date()))
+    .catch(error => {
       console.error(error);
-      list.innerHTML = '<p class="no-change">We couldn’t load the timezone schedule.</p>';
-      status.textContent = 'The timezone calendar could not be loaded. Please try again later.';
-    }
-  };
-
-  loadChanges();
+      list.innerHTML = '<tr><td colspan="4">We couldn’t load the timezone table.</td></tr>';
+      status.textContent = 'The timezone list could not be loaded. Please try again later.';
+    });
 })();
 </script>
 </body>
