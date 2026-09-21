@@ -58,7 +58,7 @@
       <h2 id="reading-heading">How to read this</h2>
       <p><strong>Summer time starts:</strong> the clock moves forward, so the UTC offset gets larger.</p>
       <p><strong>Standard time starts:</strong> the clock moves back, so the UTC offset gets smaller.</p>
-      <p>The cards below cover the next six months from today. Places that do not change their clocks in that period simply do not appear.</p>
+      <p>The cards below cover the next six months from today. Each card compares the actual meeting time on the day before and the day after the change. The UTC offset is shown underneath each calculated meeting time.</p>
     </section>
     <p id="status" class="loading-dots" aria-live="polite">Calculating the next six months</p>
     <section aria-labelledby="changes-heading">
@@ -111,8 +111,17 @@
   const dateText = (instant, zone) => new Intl.DateTimeFormat('en-US', { timeZone: zone, weekday: 'long', month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', timeZoneName: 'short' }).format(instant);
   const meetingText = (instant, zone) => new Intl.DateTimeFormat('en-US', { timeZone: zone, hour: 'numeric', minute: '2-digit', hour12: true, timeZoneName: 'short' }).format(instant);
 
-  // A daily scan is enough to find clock changes and is dramatically cheaper than
-  // formatting every 15 minutes for 18 months. Binary search then finds the exact minute.
+  // Convert a London calendar date plus the fixed meeting time to an instant.
+  const londonMeetingOn = date => {
+    const londonDate = parts(date, 'Europe/London');
+    let instant = new Date(Date.UTC(+londonDate.year, +londonDate.month - 1, +londonDate.day, 10, 30));
+    instant = new Date(instant.getTime() - offset(instant, 'Europe/London') * 60000);
+    return instant;
+  };
+  const dayBefore = instant => new Date(instant.getTime() - 86400000);
+  const dayAfter = instant => new Date(instant.getTime() + 86400000);
+
+  // A daily scan finds each offset change; binary search finds its exact minute.
   const findChanges = (zone, start, end) => {
     const day = 86400000;
     const changes = [];
@@ -131,9 +140,7 @@
         const when = new Date(high);
         changes.push({ when, before, after: offset(when, zone) });
         before = changes[changes.length - 1].after;
-      } else {
-        before = after;
-      }
+      } else before = after;
       cursor = next;
     }
     return changes;
@@ -150,7 +157,9 @@
       } else {
         list.innerHTML = changes.map(({ zone, change }) => {
           const kind = change.after > change.before ? 'Summer time starts — clocks move forward' : 'Standard time starts — clocks move back';
-          return `<article class="transition-card"><h3>${zone[0]} ${zone[1]} <span>(${zone[2]})</span></h3><p class="change-date">${dateText(change.when, zone[2])}</p><div class="change-row"><div class="change-side"><strong>${offsetText(change.before)}</strong><small>before</small></div><span class="arrow" aria-hidden="true">→</span><div class="change-side"><strong>${offsetText(change.after)}</strong><small>after</small></div></div><p class="change-kind">${kind}</p><p class="meeting-at">At that instant, the meeting is <strong>${meetingText(change.when, zone[2])}</strong> locally.</p></article>`;
+          const beforeMeeting = londonMeetingOn(dayBefore(change.when));
+          const afterMeeting = londonMeetingOn(dayAfter(change.when));
+          return `<article class="transition-card"><h3>${zone[0]} ${zone[1]} <span>(${zone[2]})</span></h3><p class="change-date">Clock change: ${dateText(change.when, zone[2])}</p><div class="change-row"><div class="change-side"><strong>${meetingText(beforeMeeting, zone[2])}</strong><small>meeting the day before · ${offsetText(offset(beforeMeeting, zone[2]))}</small></div><span class="arrow" aria-hidden="true">→</span><div class="change-side"><strong>${meetingText(afterMeeting, zone[2])}</strong><small>meeting the day after · ${offsetText(offset(afterMeeting, zone[2]))}</small></div></div><p class="change-kind">${kind}</p><p class="meeting-at">The meeting is fixed at <strong>10:30 AM London time</strong>; only the local clock relationship changes.</p></article>`;
         }).join('');
       }
       status.classList.remove('loading-dots');
