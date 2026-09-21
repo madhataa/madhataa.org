@@ -6,11 +6,11 @@
     "label": "10:30 AM"
   },
   "zones": [
-    { "label": "Perth", "tz": "Australia/Perth", "emoji": "🌅" },
-    { "label": "Adelaide", "tz": "Australia/Adelaide", "emoji": "⛪" },
-    { "label": "Melbourne", "tz": "Australia/Melbourne", "emoji": "🎭" },
-    { "label": "Roma, QLD", "tz": "Australia/Brisbane", "emoji": "🌾" },
-    { "label": "Christchurch", "tz": "Pacific/Auckland", "emoji": "🥝" },
+    { "label": "Perth (AWST)", "tz": "Australia/Perth", "emoji": "🌅" },
+    { "label": "Adelaide (ACST/ACDT)", "tz": "Australia/Adelaide", "emoji": "⛪" },
+    { "label": "Melbourne (AEST/AEDT)", "tz": "Australia/Melbourne", "emoji": "🎭" },
+    { "label": "Roma, QLD (AEST)", "tz": "Australia/Brisbane", "emoji": "🌾" },
+    { "label": "Christchurch (NZST/NZDT)", "tz": "Pacific/Auckland", "emoji": "🥝" },
     { "label": "Portland", "tz": "America/Los_Angeles", "emoji": "🦌" },
     { "label": "Minneapolis", "tz": "America/Chicago", "emoji": "🏞️" },
     { "label": "Boston", "tz": "America/New_York", "emoji": "🏙️" }
