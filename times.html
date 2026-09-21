@@ -92,15 +92,19 @@
         hour: '2-digit',
         minute: '2-digit',
         second: '2-digit',
-        hour12: false,
+        hourCycle: 'h23',
       }).formatToParts(instant).map(part => [part.type, part.value])
     );
 
+    // Some engines historically returned 24 for midnight even with hour12:false.
+    // h23 normally prevents that; normalize it defensively so the UTC date does
+    // not jump forward by a day and look like a timezone transition.
+    const hour = Number(parts.hour) % 24;
     const utcMillis = Date.UTC(
       Number(parts.year),
       Number(parts.month) - 1,
       Number(parts.day),
-      Number(parts.hour),
+      hour,
       Number(parts.minute),
       Number(parts.second)
     );
@@ -136,9 +140,7 @@
   }).format(instant);
 
   const findTransition = (timeZone, start, end) => {
-    const oneDay = 24 * 60 * 60 * 1000;
     const scanStep = 15 * 60 * 1000;
-
     let cursor = new Date(start.getTime());
     const transitions = [];
 
@@ -151,13 +153,15 @@
         let high = new Date(Math.min(end.getTime(), cursor.getTime() + scanStep * 2));
         const beforeOffset = currentOffset;
 
-        while (high.getTime() - low.getTime() > 60000) {
+        while (high.getTime() - low.getTime() > 1000) {
           const mid = new Date((low.getTime() + high.getTime()) / 2);
           if (zoneOffsetMinutes(mid, timeZone) === beforeOffset) low = mid; else high = mid;
         }
 
         const when = new Date((low.getTime() + high.getTime()) / 2);
-        const afterOffset = zoneOffsetMinutes(when, timeZone);
+        // `when` can still fall just before the boundary. `high` is the first
+        // known instant after it, so use that for the after-transition offset.
+        const afterOffset = zoneOffsetMinutes(high, timeZone);
 
         if (!Number.isNaN(when.getTime())) {
           transitions.push({ when, before: beforeOffset, after: afterOffset });
@@ -167,8 +171,6 @@
       } else {
         cursor = new Date(cursor.getTime() + scanStep);
       }
-
-      if (cursor > end) break;
     }
 
     return transitions;
