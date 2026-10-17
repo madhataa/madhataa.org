@@ -37,7 +37,31 @@
   const value = (parts, name, fallback = '') => parts[name] || fallback;
   const formatTime = (instant, timeZone) => formatParts(instant, timeZone, { hour: 'numeric', minute: '2-digit', hour12: true, timeZoneName: 'short' });
   (async () => {
-    let config; try { const response = await fetch(`/timezones.json?t=${Date.now()}`, { cache: 'no-store' }); if (!response.ok) throw new Error(`HTTP ${response.status}`); config = await response.json(); } catch (error) { console.error('Unable to load timezones.json', error); return; }
+    // Fallback config in case fetching timezones.json fails (keeps the page working)
+    const fallbackConfig = {
+      meeting: { zone: "Europe/London", hour: 10, minute: 30, label: "Daily Reflections Meeting" },
+      bigBook: { label: "Big Book Meeting", durationMinutes: 60, normal: { relation: "after", minutes: 120 }, dstSydney: { relation: "before", minutes: 90 }, interludeMinutes: 30 },
+      zones: [
+        { label: "Perth (AWST)", tz: "Australia/Perth", emoji: "🌅" },
+        { label: "Adelaide (ACST/ACDT)", tz: "Australia/Adelaide", emoji: "⛪" },
+        { label: "Melbourne (AEST/AEDT)", tz: "Australia/Melbourne", emoji: "🎭" },
+        { label: "Roma, QLD (AEST)", tz: "Australia/Brisbane", emoji: "🌾" },
+        { label: "Christchurch (NZST/NZDT)", tz: "Pacific/Auckland", emoji: "🥝" },
+        { label: "Portland", tz: "America/Los_Angeles", emoji: "🦌" },
+        { label: "Minneapolis", tz: "America/Chicago", emoji: "🏞️" },
+        { label: "Boston", tz: "America/New_York", emoji: "🏙️" }
+      ]
+    };
+
+    let config;
+    try {
+      const response = await fetch(`/timezones.json?t=${Date.now()}`, { cache: 'no-store' });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      config = await response.json();
+    } catch (error) {
+      console.warn('Unable to load timezones.json; using fallback config', error);
+      config = fallbackConfig;
+    }
 
     // Main meeting (Daily Reflections)
     const meeting = config.meeting || { zone: 'Europe/London', hour: 10, minute: 30, label: 'Daily Reflections Meeting' };
