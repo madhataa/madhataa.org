@@ -3,7 +3,14 @@
     "zone": "Europe/London",
     "hour": 10,
     "minute": 30,
-    "label": "10:30 AM"
+    "label": "Daily Reflections Meeting"
+  },
+  "bigBook": {
+    "label": "Big Book Meeting",
+    "durationMinutes": 60,
+    "normal": { "relation": "after", "minutes": 120 },
+    "dstSydney": { "relation": "before", "minutes": 90 },
+    "interludeMinutes": 30
   },
   "zones": [
     { "label": "Perth (AWST)", "tz": "Australia/Perth", "emoji": "🌅" },
