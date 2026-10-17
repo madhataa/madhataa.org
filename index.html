@@ -6,33 +6,38 @@
 <title>MaD-HaTTeRs</title>
 <meta name="description" content="Daily worldwide AA meeting streaming live at 10:30 AM GMT via Zoom. Join MaD-HaTTeRs for fellowship every single day.">
 <link rel="canonical" href="https://madhataa.org/"><link rel="stylesheet" href="styles.css">
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="/favi[...]"
-<meta property="og:type" content="website"><meta property="og:url" content="https://madhataa.org/"><meta property="og:title" content="MaD-HaTTeRs Worldwide AA Meeting"><meta property="og:descripti[...]"
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<meta property="og:type" content="website"><meta property="og:url" content="https://madhataa.org/"><meta property="og:title" content="MaD-HaTTeRs Worldwide AA Meeting"><meta property="og:description" content="Daily worldwide AA meeting streaming live at 10:30 AM GMT via Zoom. Join MaD-HaTTeRs for fellowship every single day.">
 </head>
 <body>
 <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark/light mode">🌙</button>
 <main class="hero" role="main"><div class="gradient" aria-hidden="true"></div><canvas id="particles" aria-hidden="true"></canvas><div class="decorations" aria-hidden="true"></div>
-<div class="card container"><div class="poster-top" aria-hidden="true"><span class="ticket-label">Worldwide AA Meeting</span><span class="ticket-year">EST 2020</span></div><h1 class="site-title" d[...]
-<section id="start-time-section" aria-labelledby="start-time-heading"><h2 id="start-time-heading">We're Here Every Day of the Year!</h2><div class="start-time-lines" aria-live="polite"><p class="s[...]
-<div class="local-clock" aria-live="polite"><div class="local-clock-label">Your timezone</div><div class="local-clock-display" role="group" aria-label="Local meeting start"><span id="local-time-va[...]
-<div id="on-air-panel" class="on-air-panel" aria-live="polite" hidden><span class="on-air-light" aria-hidden="true"></span><span class="on-air-text">ON AIR</span></div><section id="meeting-details[...]
+<div class="card container"><div class="poster-top" aria-hidden="true"><span class="ticket-label">Worldwide AA Meeting</span><span class="ticket-year">EST 2020</span></div><h1 class="site-title" data-translate="title">MaD-HaTTeRs</h1>
+<section id="start-time-section" aria-labelledby="start-time-heading"><h2 id="start-time-heading">We're Here Every Day of the Year!</h2><div class="start-time-lines" aria-live="polite"><p class="start-line">Next meeting starts in</p></div>
+<div class="local-clock" aria-live="polite"><div class="local-clock-label">Your timezone</div><div class="local-clock-display" role="group" aria-label="Local meeting start"><span id="local-time-value">--:--</span><span id="local-time-meta">Local</span></div></div>
+<div id="on-air-panel" class="on-air-panel" aria-live="polite" hidden><span class="on-air-light" aria-hidden="true"></span><span class="on-air-text">ON AIR</span></div><section id="meeting-details" aria-label="Meeting details"><div class="meeting-columns">
+  <div class="meeting-column england"><div class="meeting-spot"><div class="time"><span id="england-time-value">--:--</span></div><div class="zone"><span id="england-time-zone">Europe/London</span></div></div></div>
+  <div class="meeting-column sydney"><div class="meeting-spot"><div class="time"><span id="sydney-time-value">--:--</span></div><div class="zone"><span id="sydney-time-zone">Australia/Sydney</span></div></div></div>
+</div>
+<div id="start-times" class="start-times" aria-live="polite"></div>
+</section>
 <footer class="site-footer" aria-label="Site footer">we made this!</footer></div></main>
 <script>
 (() => {
   const $ = id => document.getElementById(id), html = document.documentElement, toggle = $('theme-toggle'), themeKey = 'madhataa-theme';
-  const setTheme = theme => { html.dataset.theme = theme; toggle.textContent = theme === 'dark' ? '☀️' : '🌙'; toggle.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : '[...]
+  const setTheme = theme => { html.dataset.theme = theme; toggle.textContent = theme === 'dark' ? '☀️' : '🌙'; toggle.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'); };
   let savedTheme = null; try { savedTheme = localStorage.getItem(themeKey); } catch (_) {}
   setTheme(savedTheme || (window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
   toggle.addEventListener('click', () => setTheme(html.dataset.theme === 'dark' ? 'light' : 'dark'));
-  const lowEffects = Boolean(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches || (typeof navigator.deviceMemory === 'number' && navigator.deviceMemory <= 2) || navigator.connection?[...]
+  const lowEffects = Boolean(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches || (typeof navigator.deviceMemory === 'number' && navigator.deviceMemory <= 2) || (navigator.connection && navigator.connection.saveData));
   const formatParts = (instant, timeZone, options) => Object.fromEntries(new Intl.DateTimeFormat('en-US', { timeZone, ...options }).formatToParts(instant).map(part => [part.type, part.value]));
-  const zoneOffset = (instant, timeZone) => { const p = formatParts(instant, timeZone, { hour12: false, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', secon[...]
-  const zonedTime = (year, month, day, hour, minute, timeZone) => { const guess = new Date(Date.UTC(year, month - 1, day, hour, minute)); const first = new Date(guess.getTime() - zoneOffset(guess,[...]
+  const zoneOffset = (instant, timeZone) => { const p = formatParts(instant, timeZone, { hour12: false, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' }); const asUtc = Date.UTC(Number(p.year), Number(p.month) - 1, Number(p.day), Number(p.hour), Number(p.minute), Number(p.second || 0)); return (asUtc - instant.getTime()) / 60000; };
+  const zonedTime = (year, month, day, hour, minute, timeZone) => { const guess = new Date(Date.UTC(year, month - 1, day, hour, minute)); const first = new Date(guess.getTime() - zoneOffset(guess, timeZone) * 60000); return new Date(guess.getTime() - zoneOffset(first, timeZone) * 60000); };
   const calendarDate = (instant, timeZone) => { const p = formatParts(instant, timeZone, { year: 'numeric', month: '2-digit', day: '2-digit' }); return [+p.year, +p.month, +p.day]; };
   const value = (parts, name, fallback = '') => parts[name] || fallback;
   const formatTime = (instant, timeZone) => formatParts(instant, timeZone, { hour: 'numeric', minute: '2-digit', hour12: true, timeZoneName: 'short' });
   (async () => {
-    let config; try { const response = await fetch(`/timezones.json?t=${Date.now()}`, { cache: 'no-store' }); if (!response.ok) throw new Error(`HTTP ${response.status}`); config = await response.[...]
+    let config; try { const response = await fetch(`/timezones.json?t=${Date.now()}`, { cache: 'no-store' }); if (!response.ok) throw new Error(`HTTP ${response.status}`); config = await response.json(); } catch (error) { console.error('Unable to load timezones.json', error); return; }
 
     // Main meeting (Daily Reflections)
     const meeting = config.meeting || { zone: 'Europe/London', hour: 10, minute: 30, label: 'Daily Reflections Meeting' };
@@ -48,30 +53,29 @@
     const zones = Array.isArray(config.zones) ? config.zones : [];
 
     // compute next DR meeting instant (UTC) for meeting.zone
-    const nextMeeting = now => { let [year, month, day] = calendarDate(now, meeting.zone); let target = zonedTime(year, month, day, meeting.hour, meeting.minute, meeting.zone); if (target <= now) [...]
+    const nextMeeting = now => { let [year, month, day] = calendarDate(now, meeting.zone); let target = zonedTime(year, month, day, meeting.hour, meeting.minute, meeting.zone); if (target <= now) { [year, month, day] = calendarDate(new Date(now.getTime() + 86400000), meeting.zone); target = zonedTime(year, month, day, meeting.hour, meeting.minute, meeting.zone); } return target; };
 
-    // Detect whether Australia/Sydney is observing daylight time on the given local date
-    const sydneyIsInDaylightOnLocalDate = instant => {
+    // Detect whether Australia/Sydney experiences a DST offset change on the given local date
+    const sydneyHasTransitionOnLocalDate = instant => {
       const [y, m, d] = calendarDate(instant, 'Australia/Sydney');
-      // Use local midday to avoid midnight transition ambiguity
-      const thisMidday = zonedTime(y, m, d, 12, 0, 'Australia/Sydney');
-      const parts = formatParts(thisMidday, 'Australia/Sydney', { timeZoneName: 'short' });
-      const tz = parts.timeZoneName || '';
-      // match common abbreviations like AEDT, or explicit 'DST'/'Daylight'
-      return /\bDT\b|\bDST\b/i.test(tz) || /daylight/i.test(tz);
+      const thisMid = zonedTime(y, m, d, 0, 0, 'Australia/Sydney');
+      const prevMid = new Date(thisMid.getTime() - 24 * 60 * 60 * 1000);
+      const offPrev = zoneOffset(prevMid, 'Australia/Sydney');
+      const offThis = zoneOffset(thisMid, 'Australia/Sydney');
+      return offPrev !== offThis;
     };
 
     // Given a DR instant, compute the Big Book start instant for that same meeting-day
     const bigBookInstantForDrInstant = drInstant => {
       const now = new Date();
-      // Determine whether Sydney is on daylight saving time on the DR local date
-      const isSydneyDaylight = sydneyIsInDaylightOnLocalDate(drInstant);
+      // Determine whether Sydney has a DST transition on the DR local date
+      const isSydneyTransition = sydneyHasTransitionOnLocalDate(drInstant);
       let bbStart;
-      if (isSydneyDaylight) {
-        // During Sydney daylight-saving period: Big Book starts 90 minutes BEFORE DR
+      if (isSydneyTransition) {
+        // On transition day: Big Book starts 90 minutes BEFORE DR
         bbStart = new Date(drInstant.getTime() - bigBook.dstSydney.minutes * 60000);
       } else {
-        // Normal (standard-time) day: Big Book starts 120 minutes AFTER DR
+        // Normal day: Big Book starts 120 minutes AFTER DR start
         bbStart = new Date(drInstant.getTime() + bigBook.normal.minutes * 60000);
       }
       return bbStart;
@@ -81,7 +85,7 @@
     let bbTarget = bigBookInstantForDrInstant(drTarget);
 
     // pick the next upcoming meeting (either DR or BB) for the countdown UI
-    let target = (() => { const now = new Date(); const candidates = [drTarget, bbTarget].filter(t => t && t > now); if (candidates.length === 0) return drTarget; return candidates.reduce((a, b) =[...]
+    let target = (() => { const now = new Date(); const candidates = [drTarget, bbTarget].filter(t => t && t > now); if (candidates.length === 0) return drTarget; return candidates.reduce((a, b) => a < b ? a : b); })();
 
     // Render function: show both meetings' times across the zone grid
     const render = () => {
@@ -113,7 +117,7 @@
         zones.forEach(zone => {
           const time = formatTime(instant, zone.tz), item = document.createElement('li');
           item.className = `clock-box${zone.featured ? ' clock-box-featured' : ''}`;
-          item.innerHTML = `<div class="clock-label">${zone.emoji ? `<span class="clock-emoji" aria-hidden="true">${zone.emoji}</span>` : ''}<span class="clock-label-text">${zone.label}</span></d[...]
+          item.innerHTML = `<div class="clock-label">${zone.emoji ? `<span class="clock-emoji" aria-hidden="true">${zone.emoji}</span>` : ''}<span class="clock-label-text">${zone.label}</span></div><div class="clock-time" aria-hidden="true">${value(time, 'hour', '--')}:${value(time, 'minute', '00')} ${value(time, 'dayPeriod')}</div><div class="clock-meta"><span class="tz">${value(time, 'timeZoneName', '')}</span></div>`;
           grid.appendChild(item);
         });
         wrapper.appendChild(grid);
@@ -127,9 +131,9 @@
       // Render BB then DR or DR then BB depending on which instant is earlier on that day
       // For visual consistency always show DR first then BB, but include a note when order flips
       const note = document.createElement('p');
-      const isSydneyDaylight = sydneyIsInDaylightOnLocalDate(drTarget);
-      if (isSydneyDaylight) {
-        note.textContent = `Note: While Sydney is on daylight saving time the ${bigBook.label} runs before the ${meeting.label}.`;
+      const isSydneyTransition = sydneyHasTransitionOnLocalDate(drTarget);
+      if (isSydneyTransition) {
+        note.textContent = `Note: On Sydney DST transition days the ${bigBook.label} runs before the ${meeting.label}.`;
       } else {
         note.textContent = '';
       }
@@ -171,10 +175,10 @@
     update(); setInterval(update, 1000);
   })();
 
-  const decorations = document.querySelector('.decorations'), emojis = ['😀','😃','😄','😁','😆','😅','😂','🤣','😊','😇','🙂','🙃','😉','😌','😋','😛','😜','���[...]
-  const addEmoji = direction => { if (!decorations) return; const item = document.createElement('span'); item.className = 'emoji'; item.setAttribute('aria-hidden', 'true'); item.textContent = emo[...]
+  const decorations = document.querySelector('.decorations'), emojis = ['😀','😃','😄','😁','😆','😅','😂','🤣','😊','😇','🙂','🙃','😉','😌','😋','😛','😜','😝','🤪'];
+  const addEmoji = direction => { if (!decorations) return; const item = document.createElement('span'); item.className = 'emoji'; item.setAttribute('aria-hidden', 'true'); item.textContent = emojis[Math.floor(Math.random() * emojis.length)]; item.style.setProperty('--dir', direction === 'right' ? 1 : -1); decorations.appendChild(item); setTimeout(() => item.remove(), 8000); };
   if (!lowEffects) { addEmoji('right'); addEmoji('left'); setInterval(() => addEmoji('right'), 2500); setInterval(() => addEmoji('left'), 2500); } else decorations.hidden = true;
-  const canvas = $('particles'); if (lowEffects) { canvas.hidden = true; return; } const context = canvas.getContext('2d'); let width, height; const resize = () => { width = canvas.width = innerW[...]
+  const canvas = $('particles'); if (lowEffects) { canvas.hidden = true; return; } const context = canvas.getContext('2d'); let width, height; const resize = () => { width = canvas.width = innerWidth; height = canvas.height = innerHeight; }; window.addEventListener('resize', resize); resize();
 })();
 </script>
 </body>
