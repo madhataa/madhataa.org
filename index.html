@@ -78,7 +78,9 @@
       </section>
 
       <footer class="site-footer" aria-label="Site footer">
-        we made this! — <a href="/times.html">See meeting times & daylight changes</a>
+        we made this!
+
+        <a href="/times.html">See meeting times & daylight changes</a>
       </footer>
     </div>
   </main>
@@ -303,7 +305,6 @@
           if (!lowEffects) safeText('countdown-seconds', seconds);
 
           const localZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-          // Show the Daily Reflections (DR) time in the "Your timezone" headline — not the next meeting (which might be BB)
           const localToShow = formatTime(drTarget, localZone);
           safeText('local-time-value', `${value(localToShow, 'hour', '--')}:${value(localToShow, 'minute', '--')} ${value(localToShow, 'dayPeriod')}`);
           safeText('local-time-meta', value(localToShow, 'timeZoneName', localZone));
