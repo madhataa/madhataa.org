@@ -1,209 +1,356 @@
 <!DOCTYPE html>
-<!-- Licensed under The Unlicense: see LICENSE or https://unlicense.org/ -->
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MaD-HaTTeRs</title>
-<meta name="description" content="Daily worldwide AA meeting streaming live at 10:30 AM GMT via Zoom. Join MaD-HaTTeRs for fellowship every single day.">
-<link rel="canonical" href="https://madhataa.org/"><link rel="stylesheet" href="styles.css">
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="/favicon.svg">
-<meta property="og:type" content="website"><meta property="og:url" content="https://madhataa.org/"><meta property="og:title" content="MaD-HaTTeRs Worldwide AA Meeting"><meta property="og:description" content="Daily worldwide AA meeting streaming live at 10:30 AM GMT via Zoom. Join MaD-HaTTeRs for fellowship every single day.">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MaD-HaTTeRs</title>
+  <meta name="description" content="Daily worldwide AA meeting streaming live at 10:30 AM GMT via Zoom. Join MaD-HaTTeRs for fellowship every single day." />
+  <link rel="canonical" href="https://madhataa.org/" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://madhataa.org/" />
+  <meta property="og:title" content="MaD-HaTTeRs Worldwide AA Meeting" />
+  <meta property="og:description" content="Daily worldwide AA meeting streaming live at 10:30 AM GMT via Zoom. Join MaD-HaTTeRs for fellowship every single day." />
 </head>
 <body>
-<button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark/light mode">🌙</button>
-<main class="hero" role="main"><div class="gradient" aria-hidden="true"></div><canvas id="particles" aria-hidden="true"></canvas><div class="decorations" aria-hidden="true"></div>
-<div class="card container"><div class="poster-top" aria-hidden="true"><span class="ticket-label">Worldwide AA Meeting</span><span class="ticket-year">EST 2020</span></div><h1 class="site-title" data-translate="title">MaD-HaTTeRs</h1>
-<section id="start-time-section" aria-labelledby="start-time-heading"><h2 id="start-time-heading">We're Here Every Day of the Year!</h2><div class="start-time-lines" aria-live="polite"><p class="start-line">Next meeting starts in</p></div>
-<div class="local-clock" aria-live="polite"><div class="local-clock-label">Your timezone</div><div class="local-clock-display" role="group" aria-label="Local meeting start"><span id="local-time-value">--:--</span><span id="local-time-meta">Local</span></div></div>
-<div id="on-air-panel" class="on-air-panel" aria-live="polite" hidden><span class="on-air-light" aria-hidden="true"></span><span class="on-air-text">ON AIR</span></div><section id="meeting-details" aria-label="Meeting details"><div class="meeting-columns">
-  <div class="meeting-column england"><div class="meeting-spot"><div class="time"><span id="england-time-value">--:--</span></div><div class="zone"><span id="england-time-zone">Europe/London</span></div></div></div>
-  <div class="meeting-column sydney"><div class="meeting-spot"><div class="time"><span id="sydney-time-value">--:--</span></div><div class="zone"><span id="sydney-time-zone">Australia/Sydney</span></div></div></div>
-</div>
-<div id="start-times" class="start-times" aria-live="polite"></div>
-</section>
-<footer class="site-footer" aria-label="Site footer">we made this!</footer></div></main>
-<script>
-(() => {
-  const $ = id => document.getElementById(id), html = document.documentElement, toggle = $('theme-toggle'), themeKey = 'madhataa-theme';
-  const setTheme = theme => { html.dataset.theme = theme; toggle.textContent = theme === 'dark' ? '☀️' : '🌙'; toggle.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'); };
-  let savedTheme = null; try { savedTheme = localStorage.getItem(themeKey); } catch (_) {}
-  setTheme(savedTheme || (window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
-  toggle.addEventListener('click', () => setTheme(html.dataset.theme === 'dark' ? 'light' : 'dark'));
-  const lowEffects = Boolean(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches || (typeof navigator.deviceMemory === 'number' && navigator.deviceMemory <= 2) || (navigator.connection && navigator.connection.saveData));
-  const formatParts = (instant, timeZone, options) => Object.fromEntries(new Intl.DateTimeFormat('en-US', { timeZone, ...options }).formatToParts(instant).map(part => [part.type, part.value]));
-  const zoneOffset = (instant, timeZone) => { const p = formatParts(instant, timeZone, { hour12: false, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' }); const asUtc = Date.UTC(Number(p.year), Number(p.month) - 1, Number(p.day), Number(p.hour), Number(p.minute), Number(p.second || 0)); return (asUtc - instant.getTime()) / 60000; };
-  const zonedTime = (year, month, day, hour, minute, timeZone) => { const guess = new Date(Date.UTC(year, month - 1, day, hour, minute)); const first = new Date(guess.getTime() - zoneOffset(guess, timeZone) * 60000); return new Date(guess.getTime() - zoneOffset(first, timeZone) * 60000); };
-  const calendarDate = (instant, timeZone) => { const p = formatParts(instant, timeZone, { year: 'numeric', month: '2-digit', day: '2-digit' }); return [+p.year, +p.month, +p.day]; };
-  const value = (parts, name, fallback = '') => parts[name] || fallback;
-  const formatTime = (instant, timeZone) => formatParts(instant, timeZone, { hour: 'numeric', minute: '2-digit', hour12: true, timeZoneName: 'short' });
-  (async () => {
-    // Fallback config in case fetching timezones.json fails (keeps the page working)
-    const fallbackConfig = {
-      meeting: { zone: "Europe/London", hour: 10, minute: 30, label: "Daily Reflections Meeting" },
-      bigBook: { label: "Big Book Meeting", durationMinutes: 60, normal: { relation: "after", minutes: 120 }, dstSydney: { relation: "before", minutes: 90 }, interludeMinutes: 30 },
-      zones: [
-        { label: "Perth (AWST)", tz: "Australia/Perth", emoji: "🌅" },
-        { label: "Adelaide (ACST/ACDT)", tz: "Australia/Adelaide", emoji: "⛪" },
-        { label: "Melbourne (AEST/AEDT)", tz: "Australia/Melbourne", emoji: "🎭" },
-        { label: "Roma, QLD (AEST)", tz: "Australia/Brisbane", emoji: "🌾" },
-        { label: "Christchurch (NZST/NZDT)", tz: "Pacific/Auckland", emoji: "🥝" },
-        { label: "Portland", tz: "America/Los_Angeles", emoji: "🦌" },
-        { label: "Minneapolis", tz: "America/Chicago", emoji: "🏞️" },
-        { label: "Boston", tz: "America/New_York", emoji: "🏙️" }
-      ]
-    };
+  <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark/light mode">🌙</button>
 
-    let config;
-    try {
-      const response = await fetch(`/timezones.json?t=${Date.now()}`, { cache: 'no-store' });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      config = await response.json();
-    } catch (error) {
-      console.warn('Unable to load timezones.json; using fallback config', error);
-      config = fallbackConfig;
-    }
+  <main class="hero" role="main">
+    <div class="gradient" aria-hidden="true"></div>
+    <canvas id="particles" aria-hidden="true"></canvas>
+    <div class="decorations" aria-hidden="true"></div>
 
-    // Main meeting (Daily Reflections)
-    const meeting = config.meeting || { zone: 'Europe/London', hour: 10, minute: 30, label: 'Daily Reflections Meeting' };
-    // Big Book configuration (relative to the main meeting)
-    const bigBook = config.bigBook || {
-      label: 'Big Book Meeting',
-      durationMinutes: 60,
-      normal: { relation: 'after', minutes: 120 },
-      dstSydney: { relation: 'before', minutes: 90 },
-      interludeMinutes: 30
-    };
+    <div class="card container">
+      <div class="poster-top" aria-hidden="true">
+        <span class="ticket-label">Worldwide AA Meeting</span>
+        <span class="ticket-year">EST 2020</span>
+      </div>
 
-    const zones = Array.isArray(config.zones) ? config.zones : [];
+      <h1 class="site-title" data-text="MaD-HaTTeRs">MaD-HaTTeRs</h1>
 
-    // compute next DR meeting instant (UTC) for meeting.zone
-    const nextMeeting = now => { let [year, month, day] = calendarDate(now, meeting.zone); let target = zonedTime(year, month, day, meeting.hour, meeting.minute, meeting.zone); if (target <= now) { [year, month, day] = calendarDate(new Date(now.getTime() + 86400000), meeting.zone); target = zonedTime(year, month, day, meeting.hour, meeting.minute, meeting.zone); } return target; };
+      <section id="start-time-section" aria-labelledby="start-time-heading">
+        <h2 id="start-time-heading">We're Here Every Day of the Year!</h2>
 
-    // Detect whether Australia/Sydney experiences a DST offset change on the given local date
-    const sydneyHasTransitionOnLocalDate = instant => {
-      const [y, m, d] = calendarDate(instant, 'Australia/Sydney');
-      const thisMid = zonedTime(y, m, d, 0, 0, 'Australia/Sydney');
-      const prevMid = new Date(thisMid.getTime() - 24 * 60 * 60 * 1000);
-      const offPrev = zoneOffset(prevMid, 'Australia/Sydney');
-      const offThis = zoneOffset(thisMid, 'Australia/Sydney');
-      return offPrev !== offThis;
-    };
+        <div class="start-time-lines" aria-live="polite">
+          <p class="start-line"><strong id="sydney-time-value">00:00</strong> <span id="sydney-time-zone">Sydney time</span></p>
+          <p class="start-line"><strong id="england-time-value">00:00</strong> <span id="england-time-zone">Europe/London</span></p>
+        </div>
 
-    // Given a DR instant, compute the Big Book start instant for that same meeting-day
-    const bigBookInstantForDrInstant = drInstant => {
-      const now = new Date();
-      // Determine whether Sydney has a DST transition on the DR local date
-      const isSydneyTransition = sydneyHasTransitionOnLocalDate(drInstant);
-      let bbStart;
-      if (isSydneyTransition) {
-        // On transition day: Big Book starts 90 minutes BEFORE DR
-        bbStart = new Date(drInstant.getTime() - bigBook.dstSydney.minutes * 60000);
-      } else {
-        // Normal day: Big Book starts 120 minutes AFTER DR start
-        bbStart = new Date(drInstant.getTime() + bigBook.normal.minutes * 60000);
+        <div class="local-clock" aria-live="polite">
+          <div class="local-clock-label">Your timezone</div>
+          <div class="local-clock-display" role="group" aria-label="Local meeting start">
+            <span id="local-time-value" class="local-clock-value">--:--</span>
+            <span id="local-time-meta" class="local-clock-meta">Local</span>
+          </div>
+
+          <div class="countdown" aria-label="Countdown to next start" aria-live="polite">
+            <div class="countdown-label">Next meeting in</div>
+            <div class="countdown-grid" role="group" aria-label="Hours minutes seconds">
+              <div class="countdown-unit"><span id="countdown-hours" class="countdown-value">00</span><span class="countdown-text">hours</span></div>
+              <div class="countdown-separator">:</div>
+              <div class="countdown-unit"><span id="countdown-minutes" class="countdown-value">00</span><span class="countdown-text">minutes</span></div>
+              <div class="countdown-separator" id="countdown-seconds-sep">:</div>
+              <div class="countdown-unit" id="countdown-seconds-unit"><span id="countdown-seconds" class="countdown-value">00</span><span class="countdown-text">seconds</span></div>
+            </div>
+          </div>
+
+          <p class="local-clock-note">Calculated entirely in your browser &mdash; nothing leaves this page.</p>
+        </div>
+
+        <div id="on-air-panel" class="on-air-panel" aria-live="polite" hidden>
+          <span class="on-air-light" aria-hidden="true"></span>
+          <span class="on-air-text">ON AIR</span>
+        </div>
+
+        <section id="meeting-details" aria-labelledby="meeting-details-heading">
+          <h2 id="meeting-details-heading">Join the session</h2>
+          <p class="zoom-link"><a href="https://zoom.us/j/917584869?pwd=AA" rel="noopener" target="_blank">Join on Zoom</a></p>
+          <p class="zoom-meta">Meeting ID: <strong>917&nbsp;584&nbsp;869</strong> &ndash; Passcode: <strong>AA</strong></p>
+        </section>
+
+        <div id="start-times" class="times" aria-live="polite"></div>
+      </section>
+
+      <footer class="site-footer" aria-label="Site footer">we made this!</footer>
+    </div>
+  </main>
+
+  <script>
+    (() => {
+      const $ = (id) => document.getElementById(id);
+      const safeText = (id, value) => {
+        const el = $(id);
+        if (el) el.textContent = value;
+        return !!el;
+      };
+      const html = document.documentElement;
+      const toggle = $('theme-toggle');
+      const themeKey = 'madhataa-theme';
+      const setTheme = (theme) => {
+        if (!toggle) return;
+        html.dataset.theme = theme;
+        toggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+        toggle.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+      };
+
+      try {
+        const savedTheme = localStorage.getItem(themeKey);
+        setTheme(savedTheme || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
+      } catch (_) {}
+
+      if (toggle) {
+        toggle.addEventListener('click', () => {
+          const next = html.dataset.theme === 'dark' ? 'light' : 'dark';
+          setTheme(next);
+          try { localStorage.setItem(themeKey, next); } catch (_) {}
+        });
       }
-      return bbStart;
-    };
 
-    let drTarget = nextMeeting(new Date());
-    let bbTarget = bigBookInstantForDrInstant(drTarget);
+      const lowEffects = Boolean(
+        window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
+        (typeof navigator.deviceMemory === 'number' && navigator.deviceMemory <= 2) ||
+        (navigator.connection && navigator.connection.saveData)
+      );
 
-    // pick the next upcoming meeting (either DR or BB) for the countdown UI
-    let target = (() => { const now = new Date(); const candidates = [drTarget, bbTarget].filter(t => t && t > now); if (candidates.length === 0) return drTarget; return candidates.reduce((a, b) => a < b ? a : b); })();
+      const formatParts = (instant, timeZone, options = {}) => Object.fromEntries(
+        new Intl.DateTimeFormat('en-US', { timeZone, ...options }).formatToParts(instant).map((part) => [part.type, part.value])
+      );
 
-    // Render function: show both meetings' times across the zone grid
-    const render = () => {
-      const sydneyDR = formatTime(drTarget, 'Australia/Sydney');
-      const sydneyBB = formatTime(bbTarget, 'Australia/Sydney');
-      const englandDR = formatTime(drTarget, meeting.zone);
-      const englandBB = formatTime(bbTarget, meeting.zone);
+      const zoneOffset = (instant, timeZone) => {
+        const p = formatParts(instant, timeZone, {
+          hour12: false,
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit'
+        });
+        const asUtc = Date.UTC(
+          Number(p.year),
+          Number(p.month) - 1,
+          Number(p.day),
+          Number(p.hour),
+          Number(p.minute),
+          Number(p.second || 0)
+        );
+        return (asUtc - instant.getTime()) / 60000;
+      };
 
-      $('sydney-time-value').textContent = `${value(sydneyDR, 'hour', '--')}:${value(sydneyDR, 'minute', '00')} ${value(sydneyDR, 'dayPeriod')}`;
-      $('sydney-time-zone').textContent = `Sydney — ${meeting.label}`;
-      // show BB time beneath (small)
-      // reuse england-time-value for main meeting label/time
-      $('england-time-value').textContent = `${value(englandDR, 'hour', '--')}:${value(englandDR, 'minute', '00')} ${value(englandDR, 'dayPeriod')}`;
-      $('england-time-zone').textContent = `${meeting.label}`;
+      const zonedTime = (year, month, day, hour, minute, timeZone) => {
+        const guess = new Date(Date.UTC(year, month - 1, day, hour, minute));
+        const first = new Date(guess.getTime() - zoneOffset(guess, timeZone) * 60000);
+        return new Date(guess.getTime() - zoneOffset(first, timeZone) * 60000);
+      };
 
-      const container = $('start-times');
-      if (!container) return;
-      container.innerHTML = '';
+      const calendarDate = (instant, timeZone) => {
+        const p = formatParts(instant, timeZone, { year: 'numeric', month: '2-digit', day: '2-digit' });
+        return [+p.year, +p.month, +p.day];
+      };
 
-      // Helper to build a grid for a given instant and label
-      const buildGrid = (instant, title) => {
+      const value = (parts, name, fallback = '') => parts[name] || fallback;
+      const formatTime = (instant, timeZone) => formatParts(instant, timeZone, {
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true,
+        timeZoneName: 'short'
+      });
+
+      const fallbackConfig = {
+        meeting: { zone: 'Europe/London', hour: 10, minute: 30, label: 'Daily Reflections Meeting' },
+        bigBook: {
+          label: 'Big Book Meeting',
+          durationMinutes: 60,
+          normal: { relation: 'after', minutes: 120 },
+          dstSydney: { relation: 'before', minutes: 90 },
+          interludeMinutes: 30
+        },
+        zones: [
+          { label: 'Perth (AWST)', tz: 'Australia/Perth', emoji: '🌅' },
+          { label: 'Adelaide (ACST/ACDT)', tz: 'Australia/Adelaide', emoji: '⛪' },
+          { label: 'Melbourne (AEST/AEDT)', tz: 'Australia/Melbourne', emoji: '🎭' },
+          { label: 'Roma, QLD (AEST)', tz: 'Australia/Brisbane', emoji: '🌾' },
+          { label: 'Christchurch (NZST/NZDT)', tz: 'Pacific/Auckland', emoji: '🥝' },
+          { label: 'Portland', tz: 'America/Los_Angeles', emoji: '🦌' },
+          { label: 'Minneapolis', tz: 'America/Chicago', emoji: '🏞️' },
+          { label: 'Boston', tz: 'America/New_York', emoji: '🏙️' }
+        ]
+      };
+
+      const sydneyIsInDaylightOnLocalDate = (instant) => {
+        const [y, m, d] = calendarDate(instant, 'Australia/Sydney');
+        const midday = zonedTime(y, m, d, 12, 0, 'Australia/Sydney');
+        const offset = zoneOffset(midday, 'Australia/Sydney');
+        return offset >= 660; // AEDT = UTC+11 = 660 minutes, AEST = UTC+10 = 600
+      };
+
+      const nextMeeting = (now, meetingCfg) => {
+        let [year, month, day] = calendarDate(now, meetingCfg.zone);
+        let target = zonedTime(year, month, day, meetingCfg.hour, meetingCfg.minute, meetingCfg.zone);
+        if (target <= now) {
+          [year, month, day] = calendarDate(new Date(now.getTime() + 86400000), meetingCfg.zone);
+          target = zonedTime(year, month, day, meetingCfg.hour, meetingCfg.minute, meetingCfg.zone);
+        }
+        return target;
+      };
+
+      const bigBookInstantForDrInstant = (drInstant, bigBookCfg) => {
+        const isSydneyDaylight = sydneyIsInDaylightOnLocalDate(drInstant);
+        return isSydneyDaylight
+          ? new Date(drInstant.getTime() - bigBookCfg.dstSydney.minutes * 60000)
+          : new Date(drInstant.getTime() + bigBookCfg.normal.minutes * 60000);
+      };
+
+      const buildGrid = (instant, title, zones, meetingLabel) => {
         const wrapper = document.createElement('div');
         wrapper.className = 'meeting-grid';
+
         const heading = document.createElement('h3');
         heading.textContent = title;
         wrapper.appendChild(heading);
+
         const grid = document.createElement('ul');
         grid.className = 'tz-grid';
-        zones.forEach(zone => {
-          const time = formatTime(instant, zone.tz), item = document.createElement('li');
-          item.className = `clock-box${zone.featured ? ' clock-box-featured' : ''}`;
-          item.innerHTML = `<div class="clock-label">${zone.emoji ? `<span class="clock-emoji" aria-hidden="true">${zone.emoji}</span>` : ''}<span class="clock-label-text">${zone.label}</span></div><div class="clock-time" aria-hidden="true">${value(time, 'hour', '--')}:${value(time, 'minute', '00')} ${value(time, 'dayPeriod')}</div><div class="clock-meta"><span class="tz">${value(time, 'timeZoneName', '')}</span></div>`;
+
+        zones.forEach((zone) => {
+          const time = formatTime(instant, zone.tz);
+          const item = document.createElement('li');
+          item.className = 'clock-box';
+          item.innerHTML = `
+            <div class="clock-label">${zone.emoji ? `<span class="clock-emoji" aria-hidden="true">${zone.emoji}</span>` : ''}<span class="clock-label-text">${zone.label}</span></div>
+            <div class="clock-time" aria-hidden="true">${value(time, 'hour', '--')}:${value(time, 'minute', '00')} ${value(time, 'dayPeriod')}</div>
+            <div class="clock-meta"><span class="tz">${value(time, 'timeZoneName', '')}</span></div>
+          `;
           grid.appendChild(item);
         });
+
         wrapper.appendChild(grid);
         return wrapper;
       };
 
-      // Determine labels for grids: Big Book and Daily Reflections
-      const titleDR = `${meeting.label} (DR)`;
-      const titleBB = `${bigBook.label} (BB)`;
+      (async () => {
+        let config = fallbackConfig;
+        try {
+          const response = await fetch(`/timezones.json?t=${Date.now()}`, { cache: 'no-store' });
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          config = await response.json();
+        } catch (error) {
+          console.warn('Using fallback config because /timezones.json failed', error);
+        }
 
-      // Render BB then DR or DR then BB depending on which instant is earlier on that day
-      // For visual consistency always show DR first then BB, but include a note when order flips
-      const note = document.createElement('p');
-      const isSydneyTransition = sydneyHasTransitionOnLocalDate(drTarget);
-      if (isSydneyTransition) {
-        note.textContent = `Note: On Sydney DST transition days the ${bigBook.label} runs before the ${meeting.label}.`;
-      } else {
-        note.textContent = '';
-      }
+        const meeting = config.meeting || fallbackConfig.meeting;
+        const bigBook = config.bigBook || fallbackConfig.bigBook;
+        const zones = Array.isArray(config.zones) ? config.zones : fallbackConfig.zones;
 
-      container.appendChild(note);
-      container.appendChild(buildGrid(drTarget, meeting.label));
-      container.appendChild(buildGrid(bbTarget, bigBook.label));
-    };
+        let drTarget = nextMeeting(new Date(), meeting);
+        let bbTarget = bigBookInstantForDrInstant(drTarget, bigBook);
+        let target = (() => {
+          const now = new Date();
+          const candidates = [drTarget, bbTarget].filter((t) => t && t > now);
+          if (!candidates.length) return drTarget;
+          return candidates.reduce((a, b) => (a < b ? a : b));
+        })();
 
-    render();
-    if (lowEffects) { $('countdown-seconds-unit').hidden = true; $('countdown-seconds-sep').hidden = true; }
-    const localZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        const render = () => {
+          const sydneyDr = formatTime(drTarget, 'Australia/Sydney');
+          const englandDr = formatTime(drTarget, meeting.zone);
+          const container = $('start-times');
+          if (container) {
+            container.innerHTML = '';
+            const note = document.createElement('p');
+            const isSydneyDaylight = sydneyIsInDaylightOnLocalDate(drTarget);
+            note.textContent = isSydneyDaylight
+              ? `Note: While Sydney is on daylight saving time the ${bigBook.label} runs before the ${meeting.label}.`
+              : '';
+            container.appendChild(note);
+            container.appendChild(buildGrid(drTarget, meeting.label, zones, 'DR'));
+            container.appendChild(buildGrid(bbTarget, bigBook.label, zones, 'BB'));
+          }
 
-    const update = () => {
-      const now = new Date();
-      // Recompute DR target if needed
-      if (now >= drTarget || now >= bbTarget) {
-        drTarget = nextMeeting(now);
-        bbTarget = bigBookInstantForDrInstant(drTarget);
-        target = (() => { const now = new Date(); const candidates = [drTarget, bbTarget].filter(t => t && t > now); if (candidates.length === 0) return drTarget; return candidates.reduce((a, b) => a < b ? a : b); })();
+          safeText('sydney-time-value', `${value(sydneyDr, 'hour', '--')}:${value(sydneyDr, 'minute', '00')} ${value(sydneyDr, 'dayPeriod')}`);
+          safeText('sydney-time-zone', `Sydney — ${meeting.label}`);
+          safeText('england-time-value', `${value(englandDr, 'hour', '--')}:${value(englandDr, 'minute', '00')} ${value(englandDr, 'dayPeriod')}`);
+          safeText('england-time-zone', meeting.label);
+        };
+
+        const update = () => {
+          const now = new Date();
+          if (now >= drTarget || now >= bbTarget) {
+            drTarget = nextMeeting(now, meeting);
+            bbTarget = bigBookInstantForDrInstant(drTarget, bigBook);
+            target = (() => {
+              const candidates = [drTarget, bbTarget].filter((t) => t && t > now);
+              if (!candidates.length) return drTarget;
+              return candidates.reduce((a, b) => (a < b ? a : b));
+            })();
+            render();
+          }
+
+          const remaining = Math.max(0, Math.floor((target - now) / 1000));
+          const hours = String(Math.floor(remaining / 3600)).padStart(2, '0');
+          const minutes = String(Math.floor((remaining % 3600) / 60)).padStart(2, '0');
+          const seconds = String(remaining % 60).padStart(2, '0');
+          safeText('countdown-hours', hours);
+          safeText('countdown-minutes', minutes);
+          if (!lowEffects) safeText('countdown-seconds', seconds);
+
+          const localZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+          const localToShow = formatTime(target, localZone);
+          safeText('local-time-value', `${value(localToShow, 'hour', '--')}:${value(localToShow, 'minute', '--')} ${value(localToShow, 'dayPeriod')}`);
+          safeText('local-time-meta', value(localToShow, 'timeZoneName', localZone));
+
+          const onAirPanel = $('on-air-panel');
+          if (onAirPanel) {
+            const drOnAir = now >= drTarget && now < new Date(drTarget.getTime() + 90 * 60000);
+            const bbOnAir = now >= bbTarget && now < new Date(bbTarget.getTime() + (bigBook.durationMinutes || 60) * 60000);
+            onAirPanel.toggleAttribute('hidden', !(drOnAir || bbOnAir));
+          }
+        };
+
         render();
+        update();
+        setInterval(update, 1000);
+      })();
+
+      const decorations = document.querySelector('.decorations');
+      const emojis = ['😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '😊', '😇', '🙂', '🙃', '😉', '😌', '😋', '😛', '😜', '😝', '🤪'];
+
+      if (!lowEffects && decorations) {
+        const addEmoji = (direction) => {
+          const item = document.createElement('span');
+          item.className = 'emoji';
+          item.setAttribute('aria-hidden', 'true');
+          item.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+          item.style.setProperty('--dir', direction === 'right' ? 1 : -1);
+          decorations.appendChild(item);
+          setTimeout(() => item.remove(), 8000);
+        };
+        addEmoji('right');
+        addEmoji('left');
+        setInterval(() => addEmoji('right'), 2500);
+        setInterval(() => addEmoji('left'), 2500);
+      } else if (decorations) {
+        decorations.hidden = true;
       }
 
-      const remaining = Math.max(0, Math.floor((target - now) / 1000));
-      $('countdown-hours').textContent = String(Math.floor(remaining / 3600)).padStart(2, '0');
-      $('countdown-minutes').textContent = String(Math.floor(remaining % 3600 / 60)).padStart(2, '0');
-      if (!lowEffects) $('countdown-seconds').textContent = String(remaining % 60).padStart(2, '0');
-
-      const localToShow = formatTime(target, localZone);
-      $('local-time-value').textContent = `${value(localToShow, 'hour', '--')}:${value(localToShow, 'minute', '--')} ${value(localToShow, 'dayPeriod')}`;
-      $('local-time-meta').textContent = value(localToShow, 'timeZoneName', localZone);
-
-      // On-air if either meeting is currently live
-      const drOnAir = now >= drTarget && now < new Date(drTarget.getTime() + 90 * 60000);
-      const bbOnAir = now >= bbTarget && now < new Date(bbTarget.getTime() + (bigBook.durationMinutes || 60) * 60000);
-      $('on-air-panel').toggleAttribute('hidden', !(drOnAir || bbOnAir));
-    };
-
-    update(); setInterval(update, 1000);
-  })();
-
-  const decorations = document.querySelector('.decorations'), emojis = ['😀','😃','😄','😁','😆','😅','😂','🤣','😊','😇','🙂','🙃','😉','😌','😋','😛','😜','😝','🤪'];
-  const addEmoji = direction => { if (!decorations) return; const item = document.createElement('span'); item.className = 'emoji'; item.setAttribute('aria-hidden', 'true'); item.textContent = emojis[Math.floor(Math.random() * emojis.length)]; item.style.setProperty('--dir', direction === 'right' ? 1 : -1); decorations.appendChild(item); setTimeout(() => item.remove(), 8000); };
-  if (!lowEffects) { addEmoji('right'); addEmoji('left'); setInterval(() => addEmoji('right'), 2500); setInterval(() => addEmoji('left'), 2500); } else decorations.hidden = true;
-  const canvas = $('particles'); if (lowEffects) { canvas.hidden = true; return; } const context = canvas.getContext('2d'); let width, height; const resize = () => { width = canvas.width = innerWidth; height = canvas.height = innerHeight; }; window.addEventListener('resize', resize); resize();
-})();
-</script>
+      const canvas = $('particles');
+      if (canvas && !lowEffects) {
+        const context = canvas.getContext('2d');
+        let width = 0;
+        let height = 0;
+        const resize = () => {
+          width = canvas.width = window.innerWidth;
+          height = canvas.height = window.innerHeight;
+        };
+        window.addEventListener('resize', resize);
+        resize();
+      } else if (canvas) {
+        canvas.hidden = true;
+      }
+    })();
+  </script>
 </body>
 </html>
